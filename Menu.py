@@ -22,6 +22,10 @@ class mainMenu:
 
         self.screenWidth = self.menuScreen.get_size()[0]
         self.backgroundColor = backgroundColor
+
+        self.musicPath = os.path.join(os.getcwd(), 'sounds', 'nyan.mp3')
+        self.music = pygame.mixer.music.load('assets/sounds/nyan.mp3')
+        pygame.mixer.music.play()
         
       
     
@@ -109,6 +113,7 @@ class mainMenu:
     def setFullscreen(self): 
         self.screen = pygame.display.set_mode((self.screenRect.width,self.screenRect.height), pygame.FULLSCREEN)
         self.screenMode = pygame.FULLSCREEN
+        self.displaySettings.changeSelectState(0)
         
     def setResolution(self, *args):
         newSize = args[0]
@@ -128,7 +133,7 @@ class mainMenu:
         self.resolution = SelectModule.Select(self.settingsScreen, (300, 60), ['1024x768','800x600'], (100,300), [lambda: self.setResolution((1024, 768)), lambda: self.setResolution((800, 600))])
 
 
-        # self.gameVolume = SliderModule.Slider(self.settingsScreen, (300, 25), (100, 450))
+        self.gameVolume = SliderModule.Slider(self.settingsScreen, (383, 25), (100, 450))
 
         self.applyButton = ButtonModule.Button(self.settingsScreen, (self.buttonWidth, self.buttonHeight), (self.menuScreen.get_width()/2 - self.buttonWidth/2, 600), 'red', "Apply changes", borderRadius=30)
         self.applyButton.onClick(self.goBack)
@@ -146,11 +151,14 @@ class mainMenu:
                 self.resolution.clicked(event)
                 self.applyButton.clicked(event)
 
-        self.settingsScreen.blit(self.backgroundImage, (0,0))
+            vol = self.gameVolume.clicked(event)
+            if (vol != None):
+                pygame.mixer_music.set_volume(vol)
     
         self.displaySettings.draw()
         self.resolution.draw()
-        # self.gameVolume.draw()
+        self.gameVolume.draw()
+        self.gameVolume.percentageDisplay((self.gameVolume.getRect().width + self.gameVolume.getRect().x, self.gameVolume.getRect().y))
         self.settingsFont.draw()
         self.displayFont.draw()
         self.applyButton.draw()

@@ -58,6 +58,8 @@ class Select:
     def clicked(self, event):
         if (self.selectRect.collidepoint(event.pos)):
             self.currentMenuState = not self.currentMenuState 
+        else:
+            self.currentMenuState = 0
 
         clickedElement = None
         
@@ -80,3 +82,5 @@ class Select:
                 break
 
 
+    def changeSelectState(self, newVal):
+        self.currentMenuState = newVal
