@@ -63,12 +63,21 @@ class Button:
     def onClick(self, function, *args): 
         self.clickFunction = lambda: function(*args)
 
-    def clicked(self, event):
+    def clicked(self, event, rect=None):
         self.buttonMask = pygame.mask.from_surface(self.buttonSurface)
 
-        if (self.buttonRect.collidepoint(event.pos)):
-            pos = (event.pos[0]-self.buttonRect.x,event.pos[1]-self.buttonRect.y)
+        if (rect != None):
+            self.buttonClickRect = rect
+        else:
+            self.buttonClickRect = self.buttonRect
+
+
+        print(self.buttonClickRect)
+        print(event.pos)
+
+        if (self.buttonClickRect.collidepoint(event.pos)):
+            print('collidepoint true')
+            pos = (event.pos[0]-self.buttonClickRect.x,event.pos[1]-self.buttonClickRect.y)
             if (self.buttonMask.get_at(pos) == 1):
-                print('true')
                 return self.clickFunction()
                 # return True
