@@ -60,6 +60,9 @@ class mainMenu:
 
         self.settings()
 
+
+
+
     
 
     def goToSettings(self): 
@@ -113,7 +116,6 @@ class mainMenu:
     def setFullscreen(self): 
         self.screen = pygame.display.set_mode((self.screenRect.width,self.screenRect.height), pygame.FULLSCREEN)
         self.screenMode = pygame.FULLSCREEN
-        self.displaySettings.changeSelectState(0)
         
     def setResolution(self, *args):
         newSize = args[0]
@@ -138,6 +140,11 @@ class mainMenu:
         self.applyButton = ButtonModule.Button(self.settingsScreen, (self.buttonWidth, self.buttonHeight), (self.menuScreen.get_width()/2 - self.buttonWidth/2, 600), 'red', "Apply changes", borderRadius=30)
         self.applyButton.onClick(self.goBack)
 
+        self.initialScreen = pygame.Surface((self.screenRect.width, self.screenRect.height))
+        self.settingsDraw(self.initialScreen)
+
+        self.displaySettings.setClearScreen(self.initialScreen)
+        self.resolution.setClearScreen(self.initialScreen)
 
 
     def settingsRun(self):
@@ -155,6 +162,12 @@ class mainMenu:
             if (vol != None):
                 pygame.mixer_music.set_volume(vol)
     
+            self.settingsDraw(self.screen)
+
+        pygame.display.flip()
+
+
+    def settingsDraw(self, screen): 
         self.displaySettings.draw()
         self.resolution.draw()
         self.gameVolume.draw()
@@ -164,12 +177,6 @@ class mainMenu:
         self.applyButton.draw()
 
         self.screen.blit(self.settingsScreen, (0,0))
-
-
-        pygame.display.flip()
-
-
-    
 
 
 
