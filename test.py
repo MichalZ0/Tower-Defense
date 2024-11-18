@@ -4,38 +4,33 @@ background_colour = (255,255,255)
 
 screen = pygame.display.set_mode((1024, 768))
 
-testBG = pygame.Surface((1024, 768))
-testBG.fill('blue')
 
-rect = pygame.draw.rect(testBG, 'red', (1024-100, 768-100, 100, 100))
+pygame.font.init()  # Inicjalizowanie modułu czcionek
+screen.fill('black')
+font = pygame.font.Font(None, 70)  # None używa domyślnej czcionki, 36 to rozmiar czcionki
 
-currentScreen = testBG
+# Kolor tekstu (czarny)
+text_color = (0, 0, 0)
 
-
+# Tekst do narysowania
+text = font.render('Hello, Pygame!', True, 'white')
+screen.blit(text, (0,0))
 
 
 pygame.display.set_caption('Tutorial 1')
 pygame.display.flip()
+
 running = True
 
 while running:
   for event in pygame.event.get():
     if event.type == pygame.QUIT:
       running = False
-    if event.type == pygame.MOUSEBUTTONDOWN:
-        previousSize = [screen.get_width(), screen.get_height()]
 
-        screen = pygame.display.set_mode((800, 600))
-        testBG = pygame.transform.scale(testBG, (800,600))
+    if event.type == pygame.MOUSEBUTTONDOWN: 
+        screen.blit(text, (0,0))
+        print('true')
 
-        currentScreen = testBG
+    # screen.blit(text, (0,0))
 
-        changeRatio = (currentScreen.get_width() * 100 / previousSize[0] ) / 100
-        print('before', rect)
-        rect = pygame.Rect(rect.x * changeRatio, rect.y * changeRatio, rect.width * changeRatio, rect.height * changeRatio)
-        print('after', rect)
-
-        if (rect.collidepoint(event.pos)):
-            print('clicked')
-  screen.blit(currentScreen, (0,0))
-  pygame.display.update()
+    pygame.display.update()
