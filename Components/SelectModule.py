@@ -3,7 +3,8 @@ from Components import TextModule
 from Components import ButtonModule
 
 class Select:
-    def __init__(self, screen, size, options, position, functions):
+    state = 0
+    def __init__(self, screen, size, options, position, functions, selected=''):
         self.screen = screen
         self.initialScreen = None
         self.size = size
@@ -23,7 +24,7 @@ class Select:
         pygame.draw.polygon(self.arrow, (255, 255, 255), arrow_points)
 
 
-        self.selectedOptionButton = ButtonModule.Button(self.selectedElement, (self.selectRect.width - self.arrowSize[0], self.selectRect.height), (0,0), 'blue', options[0])
+        self.selectedOptionButton = ButtonModule.Button(self.selectedElement, (self.selectRect.width - self.arrowSize[0], self.selectRect.height), (0,0), 'blue', selected)
         self.selectedOptionButton.draw()
 
         self.selectedElement.blit(self.arrow, (self.selectedElement.get_width()-self.arrow.get_width(), 0))
@@ -37,6 +38,8 @@ class Select:
         self.menuStates = [self.selectedElement, self.expandedSelect]
 
         self.options = [] 
+        self.prevState = 1
+        self.testState = 0
 
         for i in range(0, len(options)): 
             self.options.append(ButtonModule.Button(self.expandedSelect, (self.selectRect.width, self.selectRect.height), (0, (i+1) * self.selectRect.height), "red", options[i]))
@@ -48,10 +51,10 @@ class Select:
 
     def draw(self):
         self.screen.blit(self.menuStates[self.currentMenuState], (self.selectRect.x, self.selectRect.y))
+        pygame.display.update(pygame.Rect(100, 100, 100, 100))
 
 
     def clicked(self, event):
-        
 
         if (self.currentMenuState == 1): 
             for option in self.options:
@@ -60,33 +63,34 @@ class Select:
                 self.buttonClickRect.x = self.selectRect.x
                 self.buttonClickRect.y += self.selectRect.y
 
-                option.clicked(event, self.buttonClickRect)
+                res = option.clicked(event, self.buttonClickRect)
+                if (res == True):
+                    self.selectNewElement(option.getText(), option.getClickFunction())
+
+
         
         if (self.selectRect.collidepoint(event.pos)):
-            self.currentMenuState = not self.currentMenuState 
+            self.currentMenuState = int(not self.currentMenuState)
         else:
             self.screen.blit(self.initialScreen, (0,0))
-            self.currentMenuState = 0
-        # for i in range(0, self.selectElementsLen): 
-        #     clickDetectionRect = self.options[i].getRect()
-        #
-        #     clickDetectionRect.x = self.selectRect.x 
-        #     clickDetectionRect.y = self.selectRect.y + ((i+1) * self.selectRect.height)
-        #
-        #     if (clickDetectionRect.collidepoint(event.pos)):
-        #         clickedElement = i
-        #         self.currentMenuState = not self.currentMenuState
-        #
-        #         newElement = ButtonModule.Button(self.selectedElement, (self.selectRect.width-self.arrowSize[0], self.selectRect.height), (0,0), "blue", self.optionsTexts[clickedElement])
-        #         newElement.draw()
-        #         newSelectElement = ButtonModule.Button(self.expandedSelect, (self.selectRect.width-self.arrowSize[0], self.selectRect.height), (0,0), "blue", self.optionsTexts[clickedElement])
-        #         newSelectElement.draw()
-        #         self.functions[clickedElement]()
-        #
-                # break
+            self.currentMenuState = 0 
+
+
+
+
 
 
 
     def setClearScreen(self, newScreen):
         self.initialScreen = newScreen
 
+
+    def isActive(self):
+        return self.currentMenuState
+
+
+    def selectNewElement(self, text, function): 
+        self.selectedOptionButton = ButtonModule.Button(self.selectedElement, (self.selectRect.width - self.arrowSize[0], self.selectRect.height), (0,0), "blue", text)
+        self.selectedOptionButton.onClick(function) 
+        self.selectedOptionButton.draw()
+        self.expandedSelect.blit(self.selectedElement, (0, 0))

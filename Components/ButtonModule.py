@@ -50,6 +50,10 @@ class Button:
     def getSize(self):
         return [self.buttonSurface.get_width(), self.buttonSurface.get_height()]
     
+    def getText(self): 
+        return self.text
+
+
 
     def getPosition(self):
         return self.position
@@ -63,6 +67,9 @@ class Button:
     def onClick(self, function, *args): 
         self.clickFunction = lambda: function(*args)
 
+    def getClickFunction(self): 
+        return self.clickFunction
+
     def clicked(self, event, rect=None):
         self.buttonMask = pygame.mask.from_surface(self.buttonSurface)
 
@@ -72,12 +79,8 @@ class Button:
             self.buttonClickRect = self.buttonRect
 
 
-        print(self.buttonClickRect)
-        print(event.pos)
 
         if (self.buttonClickRect.collidepoint(event.pos)):
-            print('collidepoint true')
             pos = (event.pos[0]-self.buttonClickRect.x,event.pos[1]-self.buttonClickRect.y)
             if (self.buttonMask.get_at(pos) == 1):
                 return self.clickFunction()
-                # return True
