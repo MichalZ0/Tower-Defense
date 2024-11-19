@@ -31,12 +31,9 @@ class mainMenu:
         self.screenWidth = self.menuScreen.get_size()[0]
         self.backgroundColor = backgroundColor
 
-        # self.musicPath = os.path.join(os.getcwd(), 'sounds', 'nyan.mp3')
-        # self.musicPath = os.path.join(os.getcwd(), 'sounds', 'nyan.mp3')
-        # self.music = pygame.mixer.music.load('assets/sounds/nyan.mp3')
-        self.music = pygame.mixer.music.load('assets/New Folder/soundstd/shooting/fire.mp3')
-        pygame.mixer.music.play(-1)
-        pygame.mixer_music.set_volume(float(Settings.Settings.readRaw()['volume'])/100)
+        # self.music = pygame.mixer.music.load('assets/New Folder/soundstd/shooting/fire.mp3')
+        # pygame.mixer.music.play(-1)
+        # pygame.mixer_music.set_volume(float(Settings.Settings.readRaw()['volume'])/100)
         
       
     
@@ -46,7 +43,7 @@ class mainMenu:
 
         self.screenCenter = [self.menuScreen.get_width() / 2, self.menuScreen.get_height() / 2]
 
-        self.backgroundImage = pygame.image.load(os.path.join(os.getcwd(), 'assets', 'background.jpg'))
+        # self.backgroundImage = pygame.image.load(os.path.join(os.getcwd(), 'assets', 'background.jpg'))
         self.backgroundImage = pygame.image.load(os.path.join(os.getcwd(), 'assets', 'test.jpg'))
         self.backgroundImage = pygame.transform.scale(self.backgroundImage, (self.menuScreen.get_width(), self.menuScreen.get_height()))
 
@@ -70,6 +67,8 @@ class mainMenu:
         self.settingsButton.onClick(self.goToSettings)
 
         self.settings()
+
+
 
 
 
@@ -97,6 +96,9 @@ class mainMenu:
                 if event.type == pygame.QUIT:
                     self.currentScreen = None
                     self.running = False
+                
+                if event.type == pygame.MOUSEMOTION:
+                    ButtonModule.isHovered(event)
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if (self.startButton.clicked(event)):
@@ -115,7 +117,7 @@ class mainMenu:
             if (self.currentScreen == 1):
                 self.settingsRun() 
             if (self.currentScreen == 3): 
-                self.newGame.run()
+                self.running, self.currentScreen = self.newGame.run()
                 
 
 
@@ -170,9 +172,6 @@ class mainMenu:
 
         self.updateRect = (0,0, self.screenRect.width, self.screenRect.height)
 
-        # self.initialScreen = pygame.Surface((self.screenRect.width, self.screenRect.height))
-        # self.settingsDraw()
-
         self.displaySettings.setClearScreen(self.screen.copy())
         self.resolution.setClearScreen(self.screen.copy())
 
@@ -190,8 +189,8 @@ class mainMenu:
                 if event.type == pygame.QUIT:
                     self.running = False 
                     return 
+
                 if (event.type == pygame.MOUSEBUTTONDOWN): 
-                    print(self.displaySettings.isActive())
 
                     if (self.displaySettings.isActive()==0):
                         self.resolution.clicked(event)
