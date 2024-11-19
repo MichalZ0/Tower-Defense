@@ -82,7 +82,7 @@ class Monster(pygame.sprite.Sprite):
 class Dragon(Monster):
     def __init__(self, position, waypoints, image_size, animation_speed, speed, screen_size):
         super().__init__(name="Smok", health=500, speed=speed, damage=50, reward=100, image_size=image_size, animation_speed=animation_speed, screen_size=screen_size,
-                         image_paths=["dragon.png", "dragon1.png", "dragon2.png"], position=position, waypoints=waypoints)
+                         image_paths=["assets/creatures/dragon.png", "assets/creatures/dragon1.png", "assets/creatures/dragon2.png"], position=position, waypoints=waypoints)
         self.frames = [pygame.transform.flip(frame, True, False) for frame in self.frames]
     def update(self):
         super().update()  # Wywołuje poruszanie się po trasie i animację z klasy Monster
