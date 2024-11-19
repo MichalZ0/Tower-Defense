@@ -4,14 +4,18 @@ import math
 
 from Components import TextModule 
 
-ComponentTree = []
 
-def getComponentTree():  
-    return ComponentTree
+def isHovered(event): 
+    for button in Button.buttons:
+        if (button.buttonRect.collidepoint(event.pos)):
+            button.hover()
+        else:
+            button.color = 'blue'
         
 
 class Button:
-    def __init__(self, screen, size, position, color, text, padding=30, contentPosition=None, borderRadius=0):
+    buttons = []
+    def __init__(self, screen, size, position, color, text, padding=30, contentPosition=None, borderRadius=0, hover=False, hoverBg = None):
         self.screen = screen
         self.position = position
         self.color = color
@@ -25,11 +29,16 @@ class Button:
         self.font = pygame.font.Font("Fonts/OpenSans-Regular.ttf", 24)
         self.textObject = self.font.render(self.text, True, (255,255,255))
         self.buttonSurface = pygame.Surface(( self.buttonRect.width, self.buttonRect.height ))
+        self.hovered = 0
 
         if (contentPosition==None):
             self.contentPosition = (self.buttonSurface.get_width() / 2 - self.textObject.get_width() / 2, self.buttonSurface.get_height() / 2 - self.textObject.get_height() / 2)
 
-        ComponentTree.append(self)
+
+        if (hover == True): 
+            self.hoverBg = hoverBg
+
+        Button.buttons.append(self)
 
     
     def setPosition(self, pos):
@@ -70,6 +79,7 @@ class Button:
     def getClickFunction(self): 
         return self.clickFunction
 
+
     def clicked(self, event, rect=None):
         self.buttonMask = pygame.mask.from_surface(self.buttonSurface)
 
@@ -84,3 +94,6 @@ class Button:
             pos = (event.pos[0]-self.buttonClickRect.x,event.pos[1]-self.buttonClickRect.y)
             if (self.buttonMask.get_at(pos) == 1):
                 return self.clickFunction()
+
+    def hover(self):
+        self.color = 'gray'
