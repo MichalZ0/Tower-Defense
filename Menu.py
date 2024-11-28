@@ -50,17 +50,16 @@ class mainMenu:
         self.title = TextModule.Text(self.menuScreen, (10*self.sf,10*self.sf), "TOWER DEFENSE", 36)
         self.title.setPosition((self.screenWidth/2 - self.title.getSize()[0]/2, 10*self.sf))
 
-        self.startButton = ButtonModule.Button(self.menuScreen, self.buttonSize, (self.screenCenter[0] - self.buttonWidth / 2, 100*self.sf), 'blue', "Start game", borderRadius=30)
+        self.startButton = ButtonModule.Button(self.menuScreen, self.buttonSize, (self.screenCenter[0] - self.buttonWidth / 2, 100*self.sf), 'blue', "Start game", borderRadius=30, hoverBg='gray')
 
         self.buttonGap = 30*self.sf
 
-        self.settingsButton = ButtonModule.Button(self.menuScreen, self.buttonSize, (self.screenCenter[0] - self.buttonWidth / 2, self.startButton.getPosition()[1] + self.buttonHeight + self.buttonGap), 'green', "Settings", borderRadius=30)
+        self.settingsButton = ButtonModule.Button(self.menuScreen, self.buttonSize, (self.screenCenter[0] - self.buttonWidth / 2, self.startButton.getPosition()[1] + self.buttonHeight + self.buttonGap), 'green', "Settings", borderRadius=30, hoverBg='gray')
 
-        self.exitButton = ButtonModule.Button(self.menuScreen, self.buttonSize, (self.screenCenter[0] - self.buttonWidth / 2, self.settingsButton.getPosition()[1] + self.buttonHeight + self.buttonGap), 'red', "Exit game", borderRadius=30)
+        self.exitButton = ButtonModule.Button(self.menuScreen, self.buttonSize, (self.screenCenter[0] - self.buttonWidth / 2, self.settingsButton.getPosition()[1] + self.buttonHeight + self.buttonGap), 'red', "Exit game", borderRadius=30, hoverBg='gray')
 
 
         self.buttons = [self.startButton, self.settingsButton, self.exitButton]
-
 
         self.startButton.onClick(self.startGame)
         self.exitButton.onClick(self.Exit)
@@ -73,7 +72,7 @@ class mainMenu:
 
 
     def startGame(self):
-        self.newGame = game.Game(self.screen)
+        self.newGame = game.Game(self.screen, self.sf)
         self.currentScreen = 3
 
     def goToSettings(self): 
