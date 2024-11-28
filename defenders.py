@@ -7,10 +7,11 @@ class Cannon(pygame.sprite.Sprite):
         super().__init__()
 
         self.framesPath = os.path.join(image_path, 'moździeź')
+
         self.image = pygame.image.load(os.path.join(self.framesPath, 'moździeź1.png')).convert_alpha()
+        self.imageCopy = self.image
     
         self.rect = self.image.get_rect(center=position)
-        print('rectior', self.rect)
         self.range=range
         self.damage=damage
 
@@ -53,12 +54,18 @@ class Cannon(pygame.sprite.Sprite):
     def getRect(self):
         return self.rect
 
+    def setSprite(self, newSprite=None):
+        if (newSprite == None):
+            self.image = self.imageCopy
+            return
+        self.image = newSprite
+
     def showRadius(self):
-        self.towerRadiusSprite = pygame.Surface((self.rect.width, self.rect.height))
+        self.towerRadiusSprite = pygame.Surface((self.rect.width, self.rect.height), pygame.SRCALPHA)
         pygame.draw.circle(self.towerRadiusSprite, 
                            "white", 
-                           (self.rect.x, self.rect.y), 
-                           self.range/2, 
+                           (self.rect.width/2, self.rect.height/2), 
+                           self.range, 
                            3)
-
         return self.towerRadiusSprite
+
