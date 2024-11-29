@@ -67,5 +67,10 @@ class Cannon(pygame.sprite.Sprite):
                            (self.rect.width/2, self.rect.height/2), 
                            self.range, 
                            3)
-        return self.towerRadiusSprite
 
+        self.towerRadiusSprite.blit(self.imageCopy, (0,0))
+        
+        self.image = self.towerRadiusSprite
+
+    def hideRadius(self):
+        self.image = self.imageCopy
