@@ -38,6 +38,8 @@ class Game:
         self.tower_group = pygame.sprite.Group()
         self.tower_image_path = os.path.join(os.getcwd(), 'assets', 'towers')
 
+        self.towers = []
+
     def get_color_at_mouse_click(self, event):
         mouse_x, mouse_y = event
         print(mouse_x, mouse_y)
@@ -68,13 +70,21 @@ class Game:
                     mouse_position = pygame.mouse.get_pos()  # Pobierz współrzędne myszy
                     print(mouse_position)
                     self.tower = Cannon(position=mouse_position, image_path=self.tower_image_path,range=100,damage=40)
+                    if (len(self.towers) == 1): 
+                        self.towers[0].hideRadius()
+
+                    self.towers.append(self.tower)
+
                     if self.get_color_at_mouse_click(mouse_position):
                         self.tower_group.add(self.tower)
-                        self.Is=1# Dodaj nową wieżę do grupy
+                        self.Is=1
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    if (self.tower != None and self.tower.getRect().collidepoint(event.pos)):
-                        self.tower = self.tower.showRadius()
+                    for tower in self.towers:
+                        if tower.getRect().collidepoint(event.pos):
+                            tower.showRadius()
+                        else: 
+                            tower.hideRadius()
 
 
             self.draw()
