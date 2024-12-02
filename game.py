@@ -40,6 +40,7 @@ class Game:
 
         self.towers = []
 
+
     def get_color_at_mouse_click(self, event):
         mouse_x, mouse_y = event
         print(mouse_x, mouse_y)
@@ -73,24 +74,32 @@ class Game:
                     if (len(self.towers) == 1): 
                         self.towers[0].hideRadius()
 
-                    self.towers.append(self.tower)
+                    self.towers.insert(0, self.tower)
 
                     if self.get_color_at_mouse_click(mouse_position):
                         self.tower_group.add(self.tower)
                         self.Is=1
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
+                    clicked = False
                     for tower in self.towers:
-                        if tower.getRect().collidepoint(event.pos):
-                            tower.showRadius()
-                        else: 
+                        if tower.getRect().collidepoint(event.pos): 
+                            self.clickPos = (event.pos[0] - tower.getRect().x,  event.pos[1] - tower.getRect().y)
+                            if (tower.getMask().get_at(self.clickPos) == 1 and clicked == False ):  
+                                tower.showRadius()
+                                clicked = True 
+                            else:
+                                tower.hideRadius()
+                        else:
                             tower.hideRadius()
+
 
 
             self.draw()
             pygame.display.flip()
 
     def draw(self):
+
         self.screen.blit(self.background, (0, 0))
         self.tower_group.draw(self.screen)
         # Rysowanie linii łączących waypoints
