@@ -9,6 +9,8 @@ class SidePanel:
         self.height = height
         self.sf = sf
         self.color = (30, 30, 30)  # Kolor panelu
+        self.pixel_font = pygame.font.Font("Fonts/Pixeltype.ttf",int(33*self.sf))
+        #self.pixel_font.set_bold(True)
         self.button_color = (70, 130, 180)  # Kolor przycisku
         self.button_hover_color = (100, 160, 210)
         self.button_pressed_color = (50, 90, 130)
@@ -22,8 +24,13 @@ class SidePanel:
         self.panel_image = pygame.transform.scale(self.panel_image,
                                                   (self.width_size * self.sf, self.height))
 
-    def draw(self):
+    def draw(self, wave_num, max_waves):
         self.screen.blit(self.panel_image, (self.width - self.width_size * self.sf, 0))
+
+        wave_text = f"{wave_num}/{max_waves}"
+        wave_surface = self.pixel_font.render(wave_text, True, 'white')
+        wave_rect = wave_surface.get_rect(center=(self.width - 141 * self.sf // 2, 20*self.sf))
+        self.screen.blit(wave_surface, wave_rect)
 
         # Rysowanie przycisku
         button_color = self.button_color

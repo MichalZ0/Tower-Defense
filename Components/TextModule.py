@@ -2,7 +2,7 @@ import pygame
 import os
 
 class Text:
-    def __init__(self, screen, position, text, size=12, color = (255,255,255), fontFamily='OpenSans-Regular.ttf', centerX=False):
+    def __init__(self, screen, position, text, size=12, color = (255,255,255), fontFamily='Pixeltype.ttf', centerX=False):
         self.screen = screen
         self.size = size
         self.fontFamily = os.path.join(os.getcwd(), "Fonts", fontFamily)

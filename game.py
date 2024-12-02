@@ -16,6 +16,9 @@ class Game:
         self.background = pygame.transform.scale(self.background, (800*self.sf-self.side_panel.width_size*sf, 600*self.sf))
         # Inicjalizacja grupy potworów
         self.monsters = pygame.sprite.Group()
+        self.current_wave = 1
+        num_of_waves = 50
+        self.max_waves = num_of_waves
 
         scwidth = screen.get_width()
         scheight = screen.get_height()
@@ -41,6 +44,12 @@ class Game:
 
         self.towers = []
 
+    def start_wave(self):
+        # Zwiększ numer fali, gdy przycisk jest kliknięty
+        if self.current_wave < self.max_waves:
+            self.current_wave += 1
+        else:
+            pass  # Tutaj bedzie zwyciestwo bo przezylismy wszystkie fale
 
     def get_color_at_mouse_click(self, event):
         mouse_x, mouse_y = event
@@ -86,6 +95,8 @@ class Game:
                         self.Is=1
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
+                    if self.side_panel.button_rect.collidepoint(event.pos):
+                        self.start_wave()
                     clicked = False
                     for tower in self.towers:
                         if tower.getRect().collidepoint(event.pos): 
@@ -116,4 +127,4 @@ class Game:
             self.tower.update(self.monsters)
 
         self.monsters.draw(self.screen)  # Renderuje wszystkie potwory w grupie
-        self.side_panel.draw()
+        self.side_panel.draw(self.current_wave, self.max_waves)
