@@ -20,6 +20,8 @@ class Cannon(pygame.sprite.Sprite):
                     pygame.image.load(os.path.join(self.framesPath, 'moździeź3.png')).convert_alpha(),
                     pygame.image.load(os.path.join(self.framesPath, 'możdzieź4.png')).convert_alpha()]
 
+        self.shouldShowRadius = False
+
     def is_in_range(self, monster):
         #"""Sprawdza, czy dany potwór znajduje się w zasięgu wieży."""
         distance = math.hypot(
@@ -31,6 +33,9 @@ class Cannon(pygame.sprite.Sprite):
     def attack(self, monster):
         #"""Zadaje obrażenia potworowi."""
         self.image = self.frames[2]
+        if (self.shouldShowRadius == True):
+            self.showRadius()
+
         monster.take_damage(self.damage)
 
 
@@ -68,9 +73,18 @@ class Cannon(pygame.sprite.Sprite):
                            self.range, 
                            3)
 
-        self.towerRadiusSprite.blit(self.imageCopy, (0,0))
+        self.towerRadiusSprite.blit(self.image, (0,0))
         
         self.image = self.towerRadiusSprite
+        self.shouldShowRadius = True
+
+    def getMask(self):
+        return pygame.mask.from_surface(self.imageCopy)
 
     def hideRadius(self):
         self.image = self.imageCopy
+        self.shouldShowRadius = False
+
+
+    def getFirstFrame(self): 
+        return self.frames[0]
