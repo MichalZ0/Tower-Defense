@@ -1,25 +1,26 @@
 from creatures import *
 from defenders import *
+from Components.SidePanel import SidePanel
 import os
 
 class Game:
     def __init__(self, screen, sf): 
         pygame.init()
+        self.side_panel = SidePanel(screen, screen.get_width(), screen.get_height(), sf)
         self.screen = screen
         self.width, self.height = self.screen.get_width(), self.screen.get_height()
         self.bgPath = os.path.join(os.getcwd(), 'assets', 'background.png')
         self.background = pygame.image.load(self.bgPath)
         self.sf = sf # Wspolczynnik wielkosci ekranu wzgledem bazowej rozdzielczosci (800x600)
-
-
-        self.background = pygame.transform.scale(self.background, (self.width*self.sf, self.height*self.sf))
+        print("Sf", self.sf)
+        self.background = pygame.transform.scale(self.background, (800*self.sf-self.side_panel.width_size*sf, 600*self.sf))
         # Inicjalizacja grupy potworów
         self.monsters = pygame.sprite.Group()
 
         scwidth = screen.get_width()
         scheight = screen.get_height()
 
-        self.waypoints = [(120/1000*scwidth, 695/800*scheight), (120/1000*scwidth, 445/800*scheight), (315/1000*scwidth, 445/800*scheight), (315/1000*scwidth, 275/800*scheight), (150/1000*scwidth, 275/800*scheight), (150/1000*scwidth, 120/800*scheight), (452/1000*scwidth, 120/800*scheight), (452/1000*scwidth, 529/800*scheight), (722/1000*scwidth, 529/800*scheight), (722/1000*scwidth, 385/800*scheight), (595/1000*scwidth, 385/800*scheight), (595/1000*scwidth, 85/800*scheight), (700/1000*scwidth, 85/800*scheight), (700/1000*scwidth, 272/800*scheight), (900/1000*scwidth, 272/800*scheight)]
+        self.waypoints = [(580/8*self.sf, 3100/6*self.sf), (580/8*self.sf, 2070/6*self.sf), (1580/8*self.sf, 2070/6*self.sf), (1580/8*self.sf, 1270/6*self.sf), (700/8*self.sf, 1270/6*self.sf), (700/8*self.sf, 600/6*self.sf), (2310/8*self.sf, 600/6*self.sf), (2310/8*self.sf, 2440/6*self.sf), (3720/8*self.sf, 2440/6*self.sf), (3720/8*self.sf, 1750/6*self.sf), (3050/8*self.sf, 1750/6*self.sf), (3050/8*self.sf, 400/6*self.sf), (3600/8*self.sf, 400/6*self.sf), (3600/8*self.sf, 1275/6*self.sf), (4500/8*self.sf, 1275/6*self.sf)]
 
         self.waypoints2 = []
         for i in range(len(self.waypoints) - 1):
@@ -29,10 +30,10 @@ class Game:
             middle_y = (y1 + y2) / 2
             self.waypoints2.append((middle_x, middle_y))
 
-        dragon = Dragon(position=(-50/1000*scwidth, 685/800*scheight), waypoints=self.waypoints, image_size=(64/1000*scwidth, 64/800*scheight), animation_speed=5, speed=10/1000 * (scwidth + scheight)/2, screen_size=(scwidth, scheight))
+        dragon = Dragon(position=(-50/8*self.sf, 3100/6*self.sf), waypoints=self.waypoints, image_size=(64/1000*scwidth, 64/800*scheight), animation_speed=5, speed=10/1000 * (scwidth + scheight)/2, screen_size=(scwidth, scheight))
         self.monsters.add(dragon)
 
-        self.monsters.add(Troll(position=(-50/1000*scwidth, 685/800*scheight), waypoints=self.waypoints, image_size=(64/1000*scwidth, 64/800*scheight), animation_speed=5, speed=2/1000 * (scwidth + scheight)/2, screen_size=(scwidth, scheight)))
+        self.monsters.add(Troll(position=(-50/8*self.sf, 3100/6*self.sf), waypoints=self.waypoints, image_size=(64/1000*scwidth, 64/800*scheight), animation_speed=5, speed=2/1000 * (scwidth + scheight)/2, screen_size=(scwidth, scheight)))
 
         self.tower = None
         self.tower_group = pygame.sprite.Group()
@@ -62,6 +63,10 @@ class Game:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     return [False, None]
+
+                # Obsługa panelu bocznego
+                if self.side_panel.handle_event(event):
+                    print("Fala rozpoczęta")  #dodać logikę
 
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
@@ -111,4 +116,4 @@ class Game:
             self.tower.update(self.monsters)
 
         self.monsters.draw(self.screen)  # Renderuje wszystkie potwory w grupie
-        
+        self.side_panel.draw()

@@ -5,7 +5,7 @@ class Text:
     def __init__(self, screen, position, text, size=12, color = (255,255,255), fontFamily='OpenSans-Regular.ttf', centerX=False):
         self.screen = screen
         self.size = size
-        self.fontFamily = os.path.join(os.getcwd(), "fonts", fontFamily)
+        self.fontFamily = os.path.join(os.getcwd(), "Fonts", fontFamily)
         self.text = text
         self.color = color
         self.position = position
