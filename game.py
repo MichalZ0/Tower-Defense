@@ -2,6 +2,8 @@ from creatures import *
 from defenders import *
 from Components.SidePanel import SidePanel
 import os
+from waves import Waves
+
 
 class Game:
     def __init__(self, screen, sf): 
@@ -19,12 +21,13 @@ class Game:
         self.current_wave = 1
         num_of_waves = 50
         self.max_waves = num_of_waves
-
+        self.waves = Waves(self.sf, self.screen)
         scwidth = screen.get_width()
         scheight = screen.get_height()
 
         self.waypoints = [(580/8*self.sf, 3100/6*self.sf), (580/8*self.sf, 2070/6*self.sf), (1580/8*self.sf, 2070/6*self.sf), (1580/8*self.sf, 1270/6*self.sf), (700/8*self.sf, 1270/6*self.sf), (700/8*self.sf, 600/6*self.sf), (2310/8*self.sf, 600/6*self.sf), (2310/8*self.sf, 2440/6*self.sf), (3720/8*self.sf, 2440/6*self.sf), (3720/8*self.sf, 1750/6*self.sf), (3050/8*self.sf, 1750/6*self.sf), (3050/8*self.sf, 400/6*self.sf), (3600/8*self.sf, 400/6*self.sf), (3600/8*self.sf, 1275/6*self.sf), (4500/8*self.sf, 1275/6*self.sf)]
 
+        '''
         self.waypoints2 = []
         for i in range(len(self.waypoints) - 1):
             x1, y1 = self.waypoints[i]
@@ -32,11 +35,7 @@ class Game:
             middle_x = (x1 + x2) / 2
             middle_y = (y1 + y2) / 2
             self.waypoints2.append((middle_x, middle_y))
-
-        dragon = Dragon(position=(-50/8*self.sf, 3100/6*self.sf), waypoints=self.waypoints, image_size=(64/1000*scwidth, 64/800*scheight), animation_speed=5, speed=10/1000 * (scwidth + scheight)/2, screen_size=(scwidth, scheight))
-        self.monsters.add(dragon)
-
-        self.monsters.add(Troll(position=(-50/8*self.sf, 3100/6*self.sf), waypoints=self.waypoints, image_size=(64/1000*scwidth, 64/800*scheight), animation_speed=5, speed=2/1000 * (scwidth + scheight)/2, screen_size=(scwidth, scheight)))
+        '''
 
         self.tower = None
         self.tower_group = pygame.sprite.Group()
@@ -45,11 +44,7 @@ class Game:
         self.towers = []
 
     def start_wave(self):
-        # Zwiększ numer fali, gdy przycisk jest kliknięty
-        if self.current_wave < self.max_waves:
-            self.current_wave += 1
-        else:
-            pass  # Tutaj bedzie zwyciestwo bo przezylismy wszystkie fale
+        self.waves.create_wave()
 
     def get_color_at_mouse_click(self, event):
         mouse_x, mouse_y = event
@@ -75,7 +70,8 @@ class Game:
 
                 # Obsługa panelu bocznego
                 if self.side_panel.handle_event(event):
-                    print("Fala rozpoczęta")  #dodać logikę
+                    print("Fala rozpoczęta")
+                    self.start_wave()
 
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
@@ -95,8 +91,6 @@ class Game:
                         self.Is=1
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    if self.side_panel.button_rect.collidepoint(event.pos):
-                        self.start_wave()
                     clicked = False
                     for tower in self.towers:
                         if tower.getRect().collidepoint(event.pos): 
@@ -126,5 +120,6 @@ class Game:
         if self.Is ==1:
             self.tower.update(self.monsters)
 
-        self.monsters.draw(self.screen)  # Renderuje wszystkie potwory w grupie
-        self.side_panel.draw(self.current_wave, self.max_waves)
+        self.waves.update()
+        self.side_panel.draw(self.waves.wave_num, self.max_waves)
+
