@@ -9,8 +9,8 @@ class SidePanel:
         self.height = height
         self.health = health
         self.money = money
-        self.heart = pygame.transform.scale(pygame.image.load("assets/miscelanneous/heart.png"), (330, 330))
-        self.coin = pygame.transform.scale(pygame.image.load("assets/miscelanneous/coin.png"), (305, 305))
+        self.heart = pygame.transform.scale(pygame.image.load("assets/miscelanneous/heart.png"), (330*sf, 330*sf))
+        self.coin = pygame.transform.scale(pygame.image.load("assets/miscelanneous/coin.png"), (305*sf, 305*sf))
         self.sf = sf
         self.color = (30, 30, 30)  # Kolor panelu
         self.pixel_font = pygame.font.Font("Fonts/Pixeltype.ttf",int(33*self.sf))

@@ -5,11 +5,12 @@ import os
 # Ustawiamy katalog roboczy na folder z grafikami 
 # os.chdir(os.getcwd() + "/assets/New Folder/graphicstd/creatures")
 class Monster(pygame.sprite.Sprite):
-    def __init__(self, name, health, speed, damage, reward, image_paths, position, waypoints, image_size, animation_speed):
+    def __init__(self, name, health, speed, damage, reward, image_paths, position, waypoints, image_size, animation_speed, sf, max_health):
         super().__init__()  # Inicjalizacja bazowego sprite
-
+        self.sf = sf
         self.name = name
         self.health = health
+        self.max_health = max_health
         self.speed = speed
         self.damage = damage
         self.reward = reward
@@ -29,6 +30,7 @@ class Monster(pygame.sprite.Sprite):
         # Waypoints (trasa ruchu)
         self.waypoints = [pygame.Vector2(wp) for wp in waypoints]
         self.waypoint_index = 0  # Aktualny indeks punktu trasy
+        self.reached_end = False
 
     def animate(self):
         self.animation_counter += 1
@@ -53,8 +55,10 @@ class Monster(pygame.sprite.Sprite):
         if distance < self.speed:  # Jeśli jest bardzo blisko punktu, uznajemy, że dotarł
             self.position = target  # Ustawiamy dokładnie na punkcie
             if (self.waypoints[-1] == self.waypoints[self.waypoint_index]):
-                self.cause_damage(self.damage)
-
+                self.reached_end = True
+                if not self.reached_end:
+                    print("damaged")
+                    self.kill()
             if not (self.waypoints[-1] == self.waypoints[self.waypoint_index]): #to musi byc bo inaczej blad 2 linijki nizej - sprawdzenie czy to juz nie ostatni waypoint
                 self.waypoint_index += 1  # Przejście do kolejnego punktu
                 self.flip_to_left = False
@@ -68,14 +72,23 @@ class Monster(pygame.sprite.Sprite):
             self.rect.bottomleft = self.position  # Aktualizacja pozycji `rect` dla kolizji
 
     def take_damage(self, damage):
-        """Zmniejsza zdrowie o wartość obrażeń."""
         self.health -= damage
         if self.health <= 0:
-            self.kill()  # Usuwa sprite z grupy, gdy zdrowie wynosi 0
+            self.kill()
 
-    def cause_damage(self, damage):
-        print("damaged")
-        self.kill()
+    def draw_health_bar(self, surface):
+        health_bar_width = 40*self.sf
+        health_bar_height = 4*self.sf
+        # Umiejscowienie paska
+        health_bar_x = self.position[0] + 2*self.sf
+        health_bar_y = (self.position[1] - 52*self.sf)
+        # Rysowanie tła paska
+        pygame.draw.rect(surface, (255, 0, 0), (health_bar_x, health_bar_y, health_bar_width, health_bar_height))
+        # Obliczanie wypełnienia paska
+        health_fill_width = (self.health / self.max_health) * health_bar_width
+        # Rysowanie wypełnienia
+        pygame.draw.rect(surface, (0, 255, 0), (health_bar_x, health_bar_y, health_fill_width, health_bar_height))
+
     def update(self):
         """Aktualizacja ruchu potwora w kierunku trasy."""
         self.move_towards_next_waypoint()
@@ -83,10 +96,12 @@ class Monster(pygame.sprite.Sprite):
 
 
 
+
+
 class Dragon(Monster):
-    def __init__(self, position, waypoints, image_size, animation_speed=3, speed=11):
-        super().__init__(name="Dragon", health=500, speed=speed, damage=50, reward=100, image_size=image_size, animation_speed=animation_speed,
-                         image_paths=["dragon.png", "dragon1.png", "dragon2.png"], position=position, waypoints=waypoints)
+    def __init__(self, position, waypoints, image_size, sf, animation_speed=3, speed=11):
+        super().__init__(name="Dragon", health=500, max_health=500, speed=speed, damage=50, reward=100, image_size=image_size, animation_speed=animation_speed,
+                         image_paths=["dragon.png", "dragon1.png", "dragon2.png"], position=position, waypoints=waypoints, sf=sf)
         self.frames = [pygame.transform.flip(frame, True, False) for frame in self.frames]
     def update(self):
         super().update()  # Wywołuje poruszanie się po trasie i animację z klasy Monster
@@ -94,9 +109,9 @@ class Dragon(Monster):
 
 
 class Troll(Monster):
-    def __init__(self, position, waypoints, image_size, animation_speed=3, speed=3):
-        super().__init__(name="Troll", health=600, speed=speed, damage=30, reward=75, image_size=image_size, animation_speed=animation_speed,
-                         image_paths=["troll.png", "troll1.png", "troll2.png"], position=position, waypoints=waypoints)
+    def __init__(self, position, waypoints, image_size, sf, animation_speed=3, speed=3):
+        super().__init__(name="Troll", health=600, max_health=600, speed=speed, damage=30, reward=75, image_size=image_size, animation_speed=animation_speed,
+                         image_paths=["troll.png", "troll1.png", "troll2.png"], position=position, waypoints=waypoints, sf=sf)
         self.health_regen = 5
 
     def update(self):
@@ -104,43 +119,43 @@ class Troll(Monster):
 
 
 class Ghost(Monster):
-    def __init__(self, position, waypoints, image_size, animation_speed=3, speed=3):
-        super().__init__(name="Ghost", health=600, speed=speed, damage=30, reward=75, image_size=image_size, animation_speed=animation_speed,
-                          image_paths=["ghost.png"], position=position, waypoints=waypoints)
+    def __init__(self, position, waypoints, image_size, sf, animation_speed=3, speed=3):
+        super().__init__(name="Ghost", health=600, max_health=600, speed=speed, damage=20, reward=75, image_size=image_size, animation_speed=animation_speed,
+                          image_paths=["ghost.png"], position=position, waypoints=waypoints, sf=sf)
 
     def update(self):
         super().update()
 
 class Goblin(Monster):
-    def __init__(self, position, waypoints, image_size, animation_speed=3, speed=3):
-        super().__init__(name="Goblin", health=600, speed=speed, damage=30, reward=75, image_size=image_size, animation_speed=animation_speed,
-                          image_paths=["goblin.png","goblin2.png","goblin1.png"], position=position, waypoints=waypoints)
+    def __init__(self, position, waypoints, image_size, sf, animation_speed=3, speed=3):
+        super().__init__(name="Goblin", health=600, max_health=600, speed=speed, damage=5, reward=75, image_size=image_size, animation_speed=animation_speed,
+                          image_paths=["goblin.png","goblin2.png","goblin1.png"], position=position, waypoints=waypoints, sf=sf)
 
     def update(self):
         super().update()
 
 class Hydra(Monster):
-    def __init__(self, position, waypoints, image_size, animation_speed=3, speed=3):
-        super().__init__(name="Hydra", health=600, speed=speed, damage=30, reward=75, image_size=image_size, animation_speed=animation_speed,
-                          image_paths=["hydra.png","hydra1.png"], position=position, waypoints=waypoints)
+    def __init__(self, position, waypoints, image_size, sf, animation_speed=3, speed=3):
+        super().__init__(name="Hydra", health=600, max_health=600, speed=speed, damage=30, reward=75, image_size=image_size, animation_speed=animation_speed,
+                          image_paths=["hydra.png","hydra1.png"], position=position, waypoints=waypoints, sf=sf)
 
     def update(self):
         super().update()
 
 
 class Skeleton(Monster):
-    def __init__(self, position, waypoints, image_size, animation_speed=3, speed=3):
-        super().__init__(name="Skeleton", health=600, speed=speed, damage=30, reward=75, image_size=image_size, animation_speed=animation_speed,
-                          image_paths=["skeleton.png","skeleton1.png","skeleton2.png"], position=position, waypoints=waypoints)
+    def __init__(self, position, waypoints, image_size, sf, animation_speed=3, speed=3):
+        super().__init__(name="Skeleton", health=600, max_health=600, speed=speed, damage=10, reward=75, image_size=image_size, animation_speed=animation_speed,
+                          image_paths=["skeleton.png","skeleton1.png","skeleton2.png"], position=position, waypoints=waypoints, sf=sf)
 
     def update(self):
         super().update()
 
 
 class Thief(Monster):
-    def __init__(self, position, waypoints, image_size, animation_speed=3, speed=3):
-        super().__init__(name="Thief", health=600, speed=speed, damage=30, reward=75, image_size=image_size, animation_speed=animation_speed,
-                          image_paths=["thief2.png","thief1.png","thief.png"], position=position, waypoints=waypoints)
+    def __init__(self, position, waypoints, image_size, sf, animation_speed=3, speed=3):
+        super().__init__(name="Thief", health=600, max_health=600, speed=speed, damage=20, reward=75, image_size=image_size, animation_speed=animation_speed,
+                          image_paths=["thief2.png","thief1.png","thief.png"], position=position, waypoints=waypoints, sf=sf)
 
     def update(self):
         super().update()

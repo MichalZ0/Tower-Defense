@@ -21,19 +21,19 @@ class Waves:
                           (3600/8*self.sf, 400/6*self.sf), (3600/8*self.sf, 1275/6*self.sf),
                           (4500/8*self.sf, 1275/6*self.sf)]
         self.Troll = Troll((-250 / 8 * self.sf, 3100 / 6 * self.sf), self.waypoints,
-              (64 * self.sf, 50 * self.sf))
+              (64 * self.sf, 50 * self.sf), self.sf)
         self.Dragon = Dragon((-250 / 8 * self.sf, 3100 / 6 * self.sf), self.waypoints,
-                        (64 * self.sf, 50 * self.sf))
+                        (64 * self.sf, 50 * self.sf), self.sf)
         self.Ghost = Ghost((-250 / 8 * self.sf, 3100 / 6 * self.sf),self.waypoints,
-                      (64 * self.sf, 50 * self.sf))
+                      (64 * self.sf, 50 * self.sf), self.sf)
         self.Goblin = Goblin((-250 / 8 * self.sf, 3100 / 6 * self.sf), self.waypoints,
-                        (44 * self.sf, 40 * self.sf))
+                        (44 * self.sf, 40 * self.sf), self.sf)
         self.Hydra = Hydra((-250 / 8 * self.sf, 3100 / 6 * self.sf),self.waypoints,
-                      (64 * self.sf, 50 * self.sf))
+                      (64 * self.sf, 50 * self.sf), self.sf)
         self.Skeleton = Skeleton((-250 / 8 * self.sf, 3100 / 6 * self.sf),self.waypoints,
-                            (64 * self.sf, 50 * self.sf))
+                            (64 * self.sf, 50 * self.sf), self.sf)
         self.Thief = Thief((-250 / 8 * self.sf, 3100 / 6 * self.sf),self.waypoints,
-                      (64 * self.sf, 50 * self.sf))
+                      (64 * self.sf, 50 * self.sf), self.sf)
         self.monsters = pygame.sprite.Group()
 
     def create_wave(self):
@@ -42,16 +42,17 @@ class Waves:
         if self.wave_num <= self.max_waves:
             self.wave_running = True
             if self.wave_num == 1:
-                self.monsters.add(Goblin((-250 / 8 * self.sf, 3100 / 6 * self.sf), self.waypoints,(44 * self.sf, 40 * self.sf),speed=3))
+                self.monsters.add(Goblin((-250 / 8 * self.sf, 3100 / 6 * self.sf), self.waypoints,(44 * self.sf, 40 * self.sf),self.sf,speed=9))
             elif self.wave_num == 2:
                 pass
-                #self.monsters.add(Goblin((-250 / 8 * self.sf, 3100 / 6 * self.sf), self.waypoints,(44 * self.sf, 40 * self.sf)))
-                #self.monsters.add(Goblin((-1050 / 8 * self.sf, 3100 / 6 * self.sf), self.waypoints,(44 * self.sf, 40 * self.sf)))
-                #self.monsters.add(Goblin((-1850 / 8 * self.sf, 3100 / 6 * self.sf), self.waypoints, (44 * self.sf, 40 * self.sf)))
+                self.monsters.add(Goblin((-250 / 8 * self.sf, 3100 / 6 * self.sf), self.waypoints,(44 * self.sf, 40 * self.sf), self.sf,speed=9))
+                self.monsters.add(Goblin((-1050 / 8 * self.sf, 3100 / 6 * self.sf), self.waypoints,(44 * self.sf, 40 * self.sf), self.sf,speed=9))
+                self.monsters.add(Goblin((-1850 / 8 * self.sf, 3100 / 6 * self.sf), self.waypoints, (44 * self.sf, 40 * self.sf), self.sf,speed=9))
             elif self.wave_num == 3:
-                pass
+                self.monsters.add(Thief((-250 / 8 * self.sf, 3100 / 6 * self.sf), self.waypoints, (44 * self.sf, 40 * self.sf), self.sf,speed=9))
             elif self.wave_num == 4:
-                pass
+                self.monsters.add(
+                    Dragon((-250 / 8 * self.sf, 3100 / 6 * self.sf), self.waypoints, (44 * self.sf, 40 * self.sf),self.sf, speed=4))
             elif self.wave_num == 5:
                 pass
             elif self.wave_num == 6:

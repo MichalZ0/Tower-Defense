@@ -68,6 +68,14 @@ class Game:
         print(brightness)
         return brightness > 128
 
+    def take_damage(self, damage):
+        self.health -= damage
+        self.side_panel.health -= damage
+
+    def get_robbed(self): #zlodziej bedzie to uruchamial xd
+        self.money -= 100
+        self.side_panel.money -= 100
+
     def run(self):
         self.Is=0
         running = True
@@ -112,9 +120,16 @@ class Game:
                         else:
                             tower.hideRadius()
 
-
-
             self.draw()
+
+            for monster in self.waves.monsters:
+                if monster.reached_end:
+                    self.take_damage(monster.damage)
+                    if monster.name == "Thief":
+                        self.get_robbed()
+                    monster.kill()
+                monster.draw_health_bar(self.screen)
+
             pygame.display.flip()
 
     def draw(self):
