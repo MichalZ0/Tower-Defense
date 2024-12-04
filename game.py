@@ -6,24 +6,32 @@ from waves import Waves
 
 
 class Game:
-    def __init__(self, screen, sf): 
+    def __init__(self, screen, sf, difficulty='easy'):
         pygame.init()
-        self.side_panel = SidePanel(screen, screen.get_width(), screen.get_height(), sf)
+        if difficulty == 'easy':
+            self.health = 200
+            self.max_waves = 50
+            self.money = 1000
+        elif difficulty == 'challenging':
+            pass
+        elif difficulty == 'nightmare':
+            pass
+        self.side_panel = SidePanel(screen, screen.get_width(), screen.get_height(), sf, health=self.health, money=self.money)
         self.screen = screen
         self.width, self.height = self.screen.get_width(), self.screen.get_height()
         self.bgPath = os.path.join(os.getcwd(), 'assets', 'background.png')
         self.background = pygame.image.load(self.bgPath)
+        self.windmill = pygame.transform.scale(pygame.image.load("assets/map/blacksmith.png"), (250*sf, 250*sf))
+        self.windmill = pygame.transform.flip(self.windmill, True, False)
+        self.heart = pygame.transform.scale(pygame.image.load("assets/miscelanneous/heart.png"), (350, 350))
         self.sf = sf # Wspolczynnik wielkosci ekranu wzgledem bazowej rozdzielczosci (800x600)
         print("Sf", self.sf)
         self.background = pygame.transform.scale(self.background, (800*self.sf-self.side_panel.width_size*sf, 600*self.sf))
         # Inicjalizacja grupy potworów
         self.monsters = pygame.sprite.Group()
         self.current_wave = 1
-        num_of_waves = 50
-        self.max_waves = num_of_waves
         self.waves = Waves(self.sf, self.screen)
-        scwidth = screen.get_width()
-        scheight = screen.get_height()
+
 
         self.waypoints = [(580/8*self.sf, 3100/6*self.sf), (580/8*self.sf, 2070/6*self.sf), (1580/8*self.sf, 2070/6*self.sf), (1580/8*self.sf, 1270/6*self.sf), (700/8*self.sf, 1270/6*self.sf), (700/8*self.sf, 600/6*self.sf), (2310/8*self.sf, 600/6*self.sf), (2310/8*self.sf, 2440/6*self.sf), (3720/8*self.sf, 2440/6*self.sf), (3720/8*self.sf, 1750/6*self.sf), (3050/8*self.sf, 1750/6*self.sf), (3050/8*self.sf, 400/6*self.sf), (3600/8*self.sf, 400/6*self.sf), (3600/8*self.sf, 1275/6*self.sf), (4500/8*self.sf, 1275/6*self.sf)]
 
@@ -70,8 +78,9 @@ class Game:
 
                 # Obsługa panelu bocznego
                 if self.side_panel.handle_event(event):
-                    print("Fala rozpoczęta")
-                    self.start_wave()
+                    if not self.waves.wave_running and not self.waves.won:
+                        print("Fala rozpoczęta")
+                        self.start_wave()
 
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
@@ -115,11 +124,17 @@ class Game:
         # Rysowanie linii łączących waypoints
         # if len(self.waypoints) > 1:
         #     pygame.draw.lines(self.screen, (0, 255, 0), False, self.waypoints2, 3)  # Zielona linia o grubości 3 pikseli
-
+        self.screen.blit(self.windmill, (-10 * self.sf, -150 * self.sf))
         self.monsters.update()  # Aktualizuje wszystkie potwory w grupie
         if self.Is ==1:
             self.tower.update(self.monsters)
 
         self.waves.update()
-        self.side_panel.draw(self.waves.wave_num, self.max_waves)
+
+
+
+
+        #self.screen.blit(self.)
+        self.side_panel.draw(self.waves.wave_num, self.max_waves, self.waves.wave_running, self.waves.won)
+
 

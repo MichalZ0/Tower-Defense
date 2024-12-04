@@ -5,7 +5,7 @@ import os
 # Ustawiamy katalog roboczy na folder z grafikami 
 # os.chdir(os.getcwd() + "/assets/New Folder/graphicstd/creatures")
 class Monster(pygame.sprite.Sprite):
-    def __init__(self, name, health, speed, damage, reward, image_paths, position, waypoints, image_size, animation_speed, screen_size):
+    def __init__(self, name, health, speed, damage, reward, image_paths, position, waypoints, image_size, animation_speed):
         super().__init__()  # Inicjalizacja bazowego sprite
 
         self.name = name
@@ -13,7 +13,6 @@ class Monster(pygame.sprite.Sprite):
         self.speed = speed
         self.damage = damage
         self.reward = reward
-        self.screen_size = screen_size
         self.basePath = os.path.join(os.getcwd(), "assets", 'creatures', self.name)
 
         self.frames = [pygame.image.load(os.path.join(self.basePath, path)).convert_alpha() for path in image_paths]
@@ -85,8 +84,8 @@ class Monster(pygame.sprite.Sprite):
 
 
 class Dragon(Monster):
-    def __init__(self, position, waypoints, image_size, screen_size, animation_speed=3, speed=11):
-        super().__init__(name="Dragon", health=500, speed=speed, damage=50, reward=100, image_size=image_size, animation_speed=animation_speed, screen_size=screen_size,
+    def __init__(self, position, waypoints, image_size, animation_speed=3, speed=11):
+        super().__init__(name="Dragon", health=500, speed=speed, damage=50, reward=100, image_size=image_size, animation_speed=animation_speed,
                          image_paths=["dragon.png", "dragon1.png", "dragon2.png"], position=position, waypoints=waypoints)
         self.frames = [pygame.transform.flip(frame, True, False) for frame in self.frames]
     def update(self):
@@ -95,8 +94,8 @@ class Dragon(Monster):
 
 
 class Troll(Monster):
-    def __init__(self, position, waypoints, image_size, screen_size, animation_speed=3, speed=3):
-        super().__init__(name="Troll", health=600, speed=speed, damage=30, reward=75, image_size=image_size, animation_speed=animation_speed, screen_size=screen_size,
+    def __init__(self, position, waypoints, image_size, animation_speed=3, speed=3):
+        super().__init__(name="Troll", health=600, speed=speed, damage=30, reward=75, image_size=image_size, animation_speed=animation_speed,
                          image_paths=["troll.png", "troll1.png", "troll2.png"], position=position, waypoints=waypoints)
         self.health_regen = 5
 
@@ -105,24 +104,24 @@ class Troll(Monster):
 
 
 class Ghost(Monster):
-    def __init__(self, position, waypoints, image_size, screen_size, animation_speed=3, speed=3):
-        super().__init__(name="Ghost", health=600, speed=speed, damage=30, reward=75, image_size=image_size, animation_speed=animation_speed, screen_size=screen_size,
+    def __init__(self, position, waypoints, image_size, animation_speed=3, speed=3):
+        super().__init__(name="Ghost", health=600, speed=speed, damage=30, reward=75, image_size=image_size, animation_speed=animation_speed,
                           image_paths=["ghost.png"], position=position, waypoints=waypoints)
 
     def update(self):
         super().update()
 
 class Goblin(Monster):
-    def __init__(self, position, waypoints, image_size, screen_size, animation_speed=3, speed=3):
-        super().__init__(name="Goblin", health=600, speed=speed, damage=30, reward=75, image_size=image_size, animation_speed=animation_speed, screen_size=screen_size,
+    def __init__(self, position, waypoints, image_size, animation_speed=3, speed=3):
+        super().__init__(name="Goblin", health=600, speed=speed, damage=30, reward=75, image_size=image_size, animation_speed=animation_speed,
                           image_paths=["goblin.png","goblin2.png","goblin1.png"], position=position, waypoints=waypoints)
 
     def update(self):
         super().update()
 
 class Hydra(Monster):
-    def __init__(self, position, waypoints, image_size, screen_size, animation_speed=3, speed=3):
-        super().__init__(name="Hydra", health=600, speed=speed, damage=30, reward=75, image_size=image_size, animation_speed=animation_speed, screen_size=screen_size,
+    def __init__(self, position, waypoints, image_size, animation_speed=3, speed=3):
+        super().__init__(name="Hydra", health=600, speed=speed, damage=30, reward=75, image_size=image_size, animation_speed=animation_speed,
                           image_paths=["hydra.png","hydra1.png"], position=position, waypoints=waypoints)
 
     def update(self):
@@ -130,8 +129,8 @@ class Hydra(Monster):
 
 
 class Skeleton(Monster):
-    def __init__(self, position, waypoints, image_size, screen_size, animation_speed=3, speed=3):
-        super().__init__(name="Skeleton", health=600, speed=speed, damage=30, reward=75, image_size=image_size, animation_speed=animation_speed, screen_size=screen_size,
+    def __init__(self, position, waypoints, image_size, animation_speed=3, speed=3):
+        super().__init__(name="Skeleton", health=600, speed=speed, damage=30, reward=75, image_size=image_size, animation_speed=animation_speed,
                           image_paths=["skeleton.png","skeleton1.png","skeleton2.png"], position=position, waypoints=waypoints)
 
     def update(self):
@@ -139,8 +138,8 @@ class Skeleton(Monster):
 
 
 class Thief(Monster):
-    def __init__(self, position, waypoints, image_size, screen_size, animation_speed=3, speed=3):
-        super().__init__(name="Thief", health=600, speed=speed, damage=30, reward=75, image_size=image_size, animation_speed=animation_speed, screen_size=screen_size,
+    def __init__(self, position, waypoints, image_size, animation_speed=3, speed=3):
+        super().__init__(name="Thief", health=600, speed=speed, damage=30, reward=75, image_size=image_size, animation_speed=animation_speed,
                           image_paths=["thief2.png","thief1.png","thief.png"], position=position, waypoints=waypoints)
 
     def update(self):
