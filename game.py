@@ -71,6 +71,10 @@ class Game:
     def take_damage(self, damage):
         self.health -= damage
         self.side_panel.health -= damage
+        if self.health < 1:
+            self.waves.wave_running = False
+            self.waves.lose()
+
 
     def get_robbed(self): #zlodziej bedzie to uruchamial xd
         self.money -= 100
@@ -86,7 +90,7 @@ class Game:
 
                 # Obsługa panelu bocznego
                 if self.side_panel.handle_event(event):
-                    if not self.waves.wave_running and not self.waves.won:
+                    if not self.waves.wave_running and not self.waves.won and not self.waves.lost:
                         print("Fala rozpoczęta")
                         self.start_wave()
 
@@ -128,7 +132,7 @@ class Game:
                     if monster.name == "Thief":
                         self.get_robbed()
                     monster.kill()
-                monster.draw_health_bar(self.screen)
+                monster.draw_health_bar(self.screen, monster.image_size)
 
             pygame.display.flip()
 
@@ -150,6 +154,6 @@ class Game:
 
 
         #self.screen.blit(self.)
-        self.side_panel.draw(self.waves.wave_num, self.max_waves, self.waves.wave_running, self.waves.won)
+        self.side_panel.draw(self.waves.wave_num, self.max_waves, self.waves.wave_running, self.waves.won, self.waves.lost)
 
 

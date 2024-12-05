@@ -29,8 +29,8 @@ class SidePanel:
         self.panel_image = pygame.transform.scale(self.panel_image,
                                                   (self.width_size * self.sf, self.height))
 
-    def draw(self, wave_num, max_waves, wave_running, won):
-        if not won:
+    def draw(self, wave_num, max_waves, wave_running, won:bool, lost:bool):
+        if not won and not lost:
             self.screen.blit(self.panel_image, (self.width - self.width_size * self.sf, 0))
 
             wave_text = f"{wave_num}/{max_waves}"

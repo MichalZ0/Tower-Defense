@@ -15,6 +15,7 @@ class Monster(pygame.sprite.Sprite):
         self.damage = damage
         self.reward = reward
         self.basePath = os.path.join(os.getcwd(), "assets", 'creatures', self.name)
+        self.image_size = image_size
 
         self.frames = [pygame.image.load(os.path.join(self.basePath, path)).convert_alpha() for path in image_paths]
         self.frames = [pygame.transform.scale(frame, image_size) for frame in self.frames]
@@ -76,12 +77,12 @@ class Monster(pygame.sprite.Sprite):
         if self.health <= 0:
             self.kill()
 
-    def draw_health_bar(self, surface):
+    def draw_health_bar(self, surface, img_size):
         health_bar_width = 40*self.sf
         health_bar_height = 4*self.sf
         # Umiejscowienie paska
-        health_bar_x = self.position[0] + 2*self.sf
-        health_bar_y = (self.position[1] - 52*self.sf)
+        health_bar_x = self.position[0] + img_size[0]*0.1
+        health_bar_y = self.position[1] - (img_size[1]*1.2)
         # Rysowanie tła paska
         pygame.draw.rect(surface, (255, 0, 0), (health_bar_x, health_bar_y, health_bar_width, health_bar_height))
         # Obliczanie wypełnienia paska
