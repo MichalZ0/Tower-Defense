@@ -53,6 +53,7 @@ class Game:
 
     def start_wave(self):
         self.waves.create_wave()
+        self.monsters = self.waves.getMonsters()
 
     def get_color_at_mouse_click(self, event):
         mouse_x, mouse_y = event
@@ -89,10 +90,15 @@ class Game:
                     return [False, None]
 
                 # Obsługa panelu bocznego
-                if self.side_panel.handle_event(event):
+                if self.side_panel.handle_event(event, self.tower_group):
                     if not self.waves.wave_running and not self.waves.won and not self.waves.lost:
                         print("Fala rozpoczęta")
                         self.start_wave()
+
+                if self.side_panel.handleTowerSelection(event, self.tower_group): 
+                    self.towers.insert(0, self.side_panel.getTower()) 
+                    self.Is = 1
+
 
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
@@ -101,7 +107,7 @@ class Game:
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_1:  # Lewy przycisk myszy
                     mouse_position = pygame.mouse.get_pos()  # Pobierz współrzędne myszy
                     print(mouse_position)
-                    self.tower = Cannon(position=mouse_position, image_path=self.tower_image_path,range=100,damage=40)
+                    self.tower = Cannon(position=mouse_position, image_path=self.tower_image_path,range=1000,damage=100,animation_speed=100)
                     if (len(self.towers) == 1): 
                         self.towers[0].hideRadius()
 
@@ -145,10 +151,22 @@ class Game:
         #     pygame.draw.lines(self.screen, (0, 255, 0), False, self.waypoints2, 3)  # Zielona linia o grubości 3 pikseli
         self.screen.blit(self.windmill, (-10 * self.sf, -150 * self.sf))
         self.monsters.update()  # Aktualizuje wszystkie potwory w grupie
-        if self.Is ==1:
-            self.tower.update(self.monsters)
 
+        if self.Is ==1:
+            for tower in self.towers:
+                tower.update(self.monsters)
+
+                bullets = tower.getBullets()
+                for i in range(0, len(bullets)): 
+                    self.screen.blit(bullets[i].getSprite(), bullets[i].getPosition())
+                    bullets[i].update()
+                    if (bullets[i].checkCollision()):
+                        bullets.pop(i)
+
+
+        
         self.waves.update()
+
 
 
 
