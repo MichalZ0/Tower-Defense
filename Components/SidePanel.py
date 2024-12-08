@@ -137,7 +137,6 @@ class SidePanel:
                     'Archer': Cannon,
                     'Wizard': Cannon}
 
-        print(self.drawTowerPosition)
         
         if event.type == pygame.MOUSEBUTTONDOWN:
             if (event.pos[0] >= self.towerPanelRect.x and 
@@ -154,7 +153,7 @@ class SidePanel:
                     if (self.towerClicked == True):
                         self.newTower = towerMap[towerButton.getText()](self.drawTowerPosition,
                                                                         self.itemPath,
-                                                                        300,
+                                                                        100,
                                                                         100,
                                                                         1)
                         break 
