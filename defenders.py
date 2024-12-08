@@ -3,15 +3,18 @@ import os
 import math
 import time
 
+
+from Attack import *
+
 class Cannon(pygame.sprite.Sprite):
     def __init__(self, position, image_path, range, damage,animation_speed):
         super().__init__()
-        self.framesPath = os.path.join(image_path, 'katapulta')
-        self.frames = [pygame.image.load(os.path.join(self.framesPath, 'katapulta 0.png')).convert_alpha(),
-                       pygame.image.load(os.path.join(self.framesPath, 'katapulta 1.png')).convert_alpha(),
-                       pygame.image.load(os.path.join(self.framesPath, 'katapulta 2.png')).convert_alpha(),
-                       pygame.image.load(os.path.join(self.framesPath, 'katapulta 3.png')).convert_alpha(),
-                       pygame.image.load(os.path.join(self.framesPath, 'katapulta4.png')).convert_alpha()
+        self.framesPath = os.path.join(image_path, 'Cannon')
+        self.frames = [pygame.image.load(os.path.join(self.framesPath, 'Cannon0.png')).convert_alpha(),
+                       pygame.image.load(os.path.join(self.framesPath, 'Cannon1.png')).convert_alpha(),
+                       pygame.image.load(os.path.join(self.framesPath, 'Cannon2.png')).convert_alpha(),
+                       pygame.image.load(os.path.join(self.framesPath, 'Cannon3.png')).convert_alpha(),
+                       pygame.image.load(os.path.join(self.framesPath, 'Cannon4.png')).convert_alpha()
                        ]
 
         self.current_frame = 0
@@ -19,6 +22,7 @@ class Cannon(pygame.sprite.Sprite):
         self.animation_counter = 0
 
         self.image = self.frames[self.current_frame]
+        print(self.image)
 
         self.imageCopy = self.image
 
@@ -33,6 +37,8 @@ class Cannon(pygame.sprite.Sprite):
         self.attack_interval = 2000
         self.animate_interwal = 200
         self.last_animate_time=0
+
+        self.bullets = []
 
     def is_in_range(self, monster):
         # """Sprawdza, czy dany potwór znajduje się w zasięgu wieży."""
@@ -72,6 +78,7 @@ class Cannon(pygame.sprite.Sprite):
         # Atak, jeśli znaleziono cel
         if self.target:
 
+            self.bullets.append(Attack(self.target.rect, self.rect, 30))
             self.attack(self.target)  # Wywołuje atak, ustawia czas ostatniego ataku
             print(self.target.name)
 
@@ -93,8 +100,7 @@ class Cannon(pygame.sprite.Sprite):
                            self.range,
                            3)
 
-        self.towerRadiusSprite.blit(self.image, (0, 0))
-
+        self.towerRadiusSprite.blit(self.image, (0,0))
         self.image = self.towerRadiusSprite
         self.shouldShowRadius = True
 
@@ -108,6 +114,10 @@ class Cannon(pygame.sprite.Sprite):
     def getFirstFrame(self):
         return self.frames[0]
 
+    def setPosition(self, newPosition):
+        self.rect = self.image.get_rect(center=newPosition)
+        
+
     def animate(self):
         current_time = pygame.time.get_ticks()
 
@@ -118,3 +128,6 @@ class Cannon(pygame.sprite.Sprite):
         self.current_frame = (self.current_frame + 1) % len(self.frames)
         self.image = self.frames[self.current_frame]
         self.last_animate_time = current_time
+
+    def getBullets(self):
+        return self.bullets
