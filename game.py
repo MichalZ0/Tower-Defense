@@ -16,7 +16,9 @@ class Game:
             pass
         elif difficulty == 'nightmare':
             pass
-        self.side_panel = SidePanel(screen, screen.get_width(), screen.get_height(), sf, health=self.health, money=self.money)
+        self.side_panel_width = 150
+        self.side_panel = SidePanel(screen, screen.get_width(), screen.get_height(), sf, health=self.health, money=self.money, width_size=self.side_panel_width)
+
         self.screen = screen
         self.width, self.height = self.screen.get_width(), self.screen.get_height()
         self.bgPath = os.path.join(os.getcwd(), 'assets', 'background.png')
@@ -107,7 +109,7 @@ class Game:
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_1:  # Lewy przycisk myszy
                     mouse_position = pygame.mouse.get_pos()  # Pobierz współrzędne myszy
                     print(mouse_position)
-                    self.tower = Cannon(position=mouse_position, image_path=self.tower_image_path,range=1000,damage=100,animation_speed=100)
+                    self.tower = Cannon(position=mouse_position, image_path=self.tower_image_path,range=100,damage=100,animation_speed=100)
                     if (len(self.towers) == 1): 
                         self.towers[0].hideRadius()
 
@@ -118,17 +120,19 @@ class Game:
                         self.Is=1
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    clicked = False
-                    for tower in self.towers:
-                        if tower.getRect().collidepoint(event.pos): 
-                            self.clickPos = (event.pos[0] - tower.getRect().x,  event.pos[1] - tower.getRect().y)
-                            if (tower.getMask().get_at(self.clickPos) == 1 and clicked == False ):  
-                                tower.showRadius()
-                                clicked = True 
+                    if (event.pos[0] < self.width - self.side_panel_width): 
+                        clicked = False
+                        for tower in self.towers:
+                            if tower.getRect().collidepoint(event.pos): 
+                                self.clickPos = (event.pos[0] - tower.getRect().x,  event.pos[1] - tower.getRect().y)
+                                if (tower.getMask().get_at(self.clickPos) == 1 and clicked == False ):  
+                                    tower.showRadius()
+                                    clicked = True 
+                                    print('here')
+                                else:
+                                    tower.hideRadius()
                             else:
                                 tower.hideRadius()
-                        else:
-                            tower.hideRadius()
 
             self.draw()
 
@@ -168,10 +172,6 @@ class Game:
         self.waves.update()
 
 
-
-
-
-        #self.screen.blit(self.)
         self.side_panel.draw(self.waves.wave_num, self.max_waves, self.waves.wave_running, self.waves.won, self.waves.lost)
 
 
