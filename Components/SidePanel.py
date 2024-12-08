@@ -154,7 +154,7 @@ class SidePanel:
                     if (self.towerClicked == True):
                         self.newTower = towerMap[towerButton.getText()](self.drawTowerPosition,
                                                                         self.itemPath,
-                                                                        500,
+                                                                        300,
                                                                         100,
                                                                         1)
                         break 
