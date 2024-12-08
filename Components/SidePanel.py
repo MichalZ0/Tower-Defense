@@ -1,6 +1,7 @@
 import pygame
 from Components.ButtonModule import *
 from defenders import *
+import os
 
 
 class SidePanel:
@@ -59,12 +60,10 @@ class SidePanel:
                 self.item = Button(self.towerPanel, 
                                    self.itemSize, 
                                    (j * self.itemSize[0] + ((j+1) * self.itemGap), i * self.itemSize[1] + ((i +1) * self.itemGap)),
-                                   'white', "Cannon", image='Cannon')
-                self.cannonItemImage = pygame.image.load(os.path.join(self.itemPath, "Cannon", "Cannon1.png"))
+                                   'green', "Cannon", image_path=os.path.join(self.itemPath, 'Cannon', 'Cannon0.png'))
 
                 self.item.onClick(self.placeItem)
                 self.towerButtons.append(self.item)
-
 
 
         self.newTower = None
@@ -137,6 +136,8 @@ class SidePanel:
                     'Temple': Cannon, 
                     'Archer': Cannon,
                     'Wizard': Cannon}
+
+        print(self.drawTowerPosition)
         
         if event.type == pygame.MOUSEBUTTONDOWN:
             if (event.pos[0] >= self.towerPanelRect.x and 
@@ -153,7 +154,7 @@ class SidePanel:
                     if (self.towerClicked == True):
                         self.newTower = towerMap[towerButton.getText()](self.drawTowerPosition,
                                                                         self.itemPath,
-                                                                        100,
+                                                                        500,
                                                                         100,
                                                                         1)
                         break 
