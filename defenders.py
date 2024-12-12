@@ -5,10 +5,14 @@ import time
 
 
 from Attack import *
+from Components.BottomPanel import *
 
 class Cannon(pygame.sprite.Sprite):
-    def __init__(self, position, image_path, range, damage,animation_speed):
+    def __init__(self, position, image_path, range, damage,animation_speed, name='', updateSidePanel=None):
         super().__init__()
+        self.name = name
+        self.damage = damage
+
         self.framesPath = os.path.join(image_path, 'Cannon')
         self.frames = [pygame.image.load(os.path.join(self.framesPath, 'Cannon0.png')).convert_alpha(),
                        pygame.image.load(os.path.join(self.framesPath, 'Cannon1.png')).convert_alpha(),
@@ -22,7 +26,6 @@ class Cannon(pygame.sprite.Sprite):
         self.animation_counter = 0
 
         self.image = self.frames[self.current_frame]
-        print(self.image)
 
         self.imageCopy = self.image
 
@@ -37,6 +40,8 @@ class Cannon(pygame.sprite.Sprite):
         self.attack_interval = 2000
         self.animate_interwal = 200
         self.last_animate_time=0
+
+        self.updateBottomPanel = updateSidePanel
 
         self.bullets = []
 
@@ -93,16 +98,17 @@ class Cannon(pygame.sprite.Sprite):
         self.image = newSprite
 
     def showRadius(self):
-        self.towerRadiusSprite = pygame.Surface((self.rect.width, self.rect.height), pygame.SRCALPHA)
+        self.towerRadiusSprite = pygame.Surface((self.range, self.range), pygame.SRCALPHA)
         pygame.draw.circle(self.towerRadiusSprite,
                            "white",
-                           (self.rect.width / 2, self.rect.height / 2),
-                           self.range,
+                           (self.range / 2, self.range / 2),
+                           self.range/2,
                            3)
 
         self.towerRadiusSprite.blit(self.image, (0,0))
         self.image = self.towerRadiusSprite
         self.shouldShowRadius = True
+
 
     def getMask(self):
         return pygame.mask.from_surface(self.imageCopy)

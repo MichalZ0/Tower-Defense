@@ -15,7 +15,7 @@ def isHovered(event):
 
 class Button:
     buttons = []
-    def __init__(self, screen, size, position, color, text, padding=30, contentPosition=None, borderRadius=0, hover=False, hoverBg = None, image_path=None):
+    def __init__(self, screen, size, position, color, text, padding=30, contentPosition=None, borderRadius=0, hover=False, hoverBg = None, image_path=None, textSize = 24):
         self.screen = screen
         self.position = position
         self.color = color
@@ -27,12 +27,13 @@ class Button:
         self.image_path = image_path
         self.clickFunction = lambda: print('') 
 
-        self.font = pygame.font.Font("Fonts/OpenSans-Regular.ttf", 24)
+        self.font = pygame.font.Font("Fonts/OpenSans-Regular.ttf", textSize)
         self.textObject = self.font.render(self.text, True, (255,255,255))
         self.buttonSurface = pygame.Surface(( self.buttonRect.width, self.buttonRect.height ), pygame.SRCALPHA)
         self.hovered = 0
 
-        if (contentPosition==None):
+        self.contentPosition = contentPosition
+        if (self.contentPosition==None):
             self.contentPosition = (self.buttonSurface.get_width() / 2 - self.textObject.get_width() / 2, self.buttonSurface.get_height() / 2 - self.textObject.get_height() / 2)
 
 
@@ -106,3 +107,44 @@ class Button:
 
     def hover(self):
         self.color = 'gray'
+
+
+class upgradeButton(Button):
+    def __init__(self, screen, size, position, color, text, image_path, upgradeTitle, upgradeCost):
+        Button.__init__(self, screen, size, position, color, text)
+        self.image_path = image_path
+
+
+        self.upgradeTitle = upgradeTitle
+        self.upgradeCost = upgradeCost
+
+        self.textSize = 18
+        self.font = pygame.font.Font("Fonts/OpenSans-Regular.ttf", self.textSize)
+
+        self.upgradeTitle = self.font.render(self.upgradeTitle, True, (255,255,255))
+        self.upgradeCost = self.font.render(self.upgradeCost, True, (255,255,255))
+
+        self.upgradeImage = pygame.image.load(image_path)
+        self.upgradeImage = pygame.transform.scale(self.upgradeImage, (40, 40))
+    
+    def draw(self):
+        self.buttonRect = pygame.draw.rect(self.buttonSurface, self.color, (0,0,self.buttonSurface.get_width(), self.buttonSurface.get_height()), 
+                         width=0, border_radius=self.borderRadius)
+
+        self.buttonRect.x = self.position[0]
+        self.buttonRect.y = self.position[1]
+
+        self.buttonSurface.blit(self.upgradeTitle, (self.buttonRect.width/2 - self.upgradeTitle.get_width()/2, 0))
+        self.buttonSurface.blit(self.upgradeCost, (self.buttonRect.width/2 - self.upgradeCost.get_rect().width/2, self.buttonRect.height-self.upgradeCost.get_height()))
+
+        
+        self.buttonSurface.blit(self.upgradeImage, (self.buttonRect.width/2 - self.upgradeImage.get_rect().width/2, 
+                                                    (self.upgradeTitle.get_height() + (self.buttonRect.height - self.upgradeTitle.get_height() - self.upgradeCost.get_height())/2  - self.upgradeImage.get_height()/2) 
+                                                    ))
+
+        self.screen.blit(self.buttonSurface, (self.position[0], self.position[1]))
+
+        
+
+
+

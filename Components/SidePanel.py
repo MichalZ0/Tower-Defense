@@ -155,7 +155,8 @@ class SidePanel:
                                                                         self.itemPath,
                                                                         100,
                                                                         100,
-                                                                        1)
+                                                                        1,
+                                                                        towerButton.getText())
                         break 
 
         if (event.type == pygame.MOUSEMOTION and self.towerClicked == True):

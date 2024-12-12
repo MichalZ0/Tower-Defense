@@ -1,6 +1,7 @@
 from creatures import *
 from defenders import *
 from Components.SidePanel import SidePanel
+from Components.BottomPanel import BottomPanel
 import os
 from waves import Waves
 
@@ -17,7 +18,10 @@ class Game:
         elif difficulty == 'nightmare':
             pass
         self.side_panel_width = 150
+        self.bottom_panel_height = 130
+
         self.side_panel = SidePanel(screen, screen.get_width(), screen.get_height(), sf, health=self.health, money=self.money, width_size=self.side_panel_width)
+        self.bottom_panel = BottomPanel(screen, sf, screen.get_width() - self.side_panel_width, self.bottom_panel_height)
 
         self.screen = screen
         self.width, self.height = self.screen.get_width(), self.screen.get_height()
@@ -109,7 +113,7 @@ class Game:
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_1:  # Lewy przycisk myszy
                     mouse_position = pygame.mouse.get_pos()  # Pobierz współrzędne myszy
                     print(mouse_position)
-                    self.tower = Cannon(position=mouse_position, image_path=self.tower_image_path,range=100,damage=100,animation_speed=100)
+                    self.tower = Cannon(position=mouse_position, image_path=self.tower_image_path,range=100,damage=100,animation_speed=100, name="Cannon", updateSidePanel=self.bottom_panel.drawSelectedTowerInfo)
                     if (len(self.towers) == 1): 
                         self.towers[0].hideRadius()
 
@@ -127,12 +131,18 @@ class Game:
                                 self.clickPos = (event.pos[0] - tower.getRect().x,  event.pos[1] - tower.getRect().y)
                                 if (tower.getMask().get_at(self.clickPos) == 1 and clicked == False ):  
                                     tower.showRadius()
+                                    # self.bottom_panel.drawSelectedTowerInfo(tower)
                                     clicked = True 
-                                    print('here')
                                 else:
                                     tower.hideRadius()
+                                    # self.bottom_panel.clearPanel()
+
                             else:
                                 tower.hideRadius()
+
+                        # if (clicked == False):
+                        #     self.bottom_panel.clearPanel()
+
 
             self.draw()
 
@@ -173,5 +183,6 @@ class Game:
 
 
         self.side_panel.draw(self.waves.wave_num, self.max_waves, self.waves.wave_running, self.waves.won, self.waves.lost)
+        self.bottom_panel.draw()
 
 
