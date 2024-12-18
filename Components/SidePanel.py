@@ -3,9 +3,9 @@ from Components.ButtonModule import *
 from defenders import *
 import os
 
-
 class SidePanel:
-    def __init__(self, screen, width, height, sf, health:int, money:int, width_size=150): 
+    def __init__(self, screen, width, height, sf, health:int, money:int, width_size=150, game_size=(0,0)): 
+        self.game_size = game_size
         self.width_size = width_size
         self.screen = screen
         self.width = width
@@ -115,7 +115,6 @@ class SidePanel:
         for towerIcon in self.towerButtons:
             towerIcon.draw()
             
-
         self.screen.blit(self.towerPanel, self.towerPanelRect)
 
         if self.towerImage != None:
@@ -159,30 +158,49 @@ class SidePanel:
                                                                         towerButton.getText())
                         break 
 
-        if (event.type == pygame.MOUSEMOTION and self.towerClicked == True):
 
 
-            if (event.pos[0] > 0 and
-                event.pos[0] - self.newTower.getRect().width/2 > 0 and 
-                event.pos[0] <= self.towerPanelRect.x): 
+        if (event.type == pygame.MOUSEMOTION and self.towerClicked == True and self.newTower != None):
+
+            if (event.pos[0] > 0 and 
+                event.pos[0] <= self.towerPanelRect.x and
+                event.pos[0] > self.newTower.frames[0].get_rect().width/2 and
+                event.pos[1] < self.game_size[1] - self.newTower.frames[0].get_rect().height/2 and
+                event.pos[1] > self.newTower.frames[0].get_rect().height/2):  
 
                 sprites.add(self.newTower)
                 
                 self.drawTowerPosition = [event.pos[0], event.pos[1]]
-                self.newTower.setPosition(event.pos)
+                self.newTower.setPosition(self.drawTowerPosition)
 
                 self.newTower.showRadius()
-            
+                self.newTower.radiusColor = 'white'
 
             elif (event.pos[0] > self.towerPanelRect.x):
                 sprites.remove(self.newTower)
 
-            if (event.buttons[0] == 0):
-                self.towerClicked = False
-                self.newTower.hideRadius()
-                
-                return True
+            if (self.get_color_at_mouse_click(event.pos) == False):
+                self.newTower.radiusColor = 'red'
 
+
+        if (event.type == pygame.MOUSEBUTTONUP and self.towerClicked == True and self.newTower != None):
+            self.towerClicked = False
+            self.newTower.hideRadius()
+
+            if (event.pos[0] < self.newTower.frames[0].get_rect().width/2):
+                self.newTower.setPosition((self.newTower.frames[0].get_rect().width/2, event.pos[1]))
+            elif (event.pos[1] > self.game_size[1] - self.newTower.frames[0].get_rect().height/2):
+                self.newTower.setPosition((event.pos[0],self.game_size[1] - self.newTower.frames[0].get_rect().height/2))
+            elif (event.pos[1] < self.newTower.frames[0].get_rect().height/2):
+                self.newTower.setPosition((event.pos[0],self.newTower.frames[0].get_rect().height/2))
+            else:
+                self.newTower.setPosition(event.pos)
+
+            
+
+            return True
+
+    
 
     
     def getTower(self):
@@ -190,3 +208,17 @@ class SidePanel:
             return self.newTower
         
 
+    def get_color_at_mouse_click(self, event):
+        mouse_x, mouse_y = event
+        print(mouse_x, mouse_y)
+
+        # Sprawdzanie koloru piksela w tym miejscu
+        self.background = pygame.image.load(os.path.join(os.getcwd(), 'assets', 'map', 'background.png'))
+        color = self.background.get_at((mouse_x, mouse_y))
+        #print(f"Kolor w miejscu kliknięcia: {color}")
+        R, G, B, A = color  # Przypisanie wartości składowych koloru
+        brightness = 0.2126 * R + 0.7152 * G + 0.0722 * B  # Obliczanie jasności
+
+        # Jeśli jasność jest powyżej pewnego progu (np. 128), uznajemy kolor za jasny
+        print(brightness)
+        return brightness > 128

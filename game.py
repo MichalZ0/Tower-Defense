@@ -20,7 +20,7 @@ class Game:
         self.side_panel_width = 150
         self.bottom_panel_height = 130
 
-        self.side_panel = SidePanel(screen, screen.get_width(), screen.get_height(), sf, health=self.health, money=self.money, width_size=self.side_panel_width)
+        self.side_panel = SidePanel(screen, screen.get_width(), screen.get_height(), sf, health=self.health, money=self.money, width_size=self.side_panel_width, game_size = (screen.get_width()-self.side_panel_width, screen.get_height() - self.bottom_panel_height))
         self.bottom_panel = BottomPanel(screen, sf, screen.get_width() - self.side_panel_width, self.bottom_panel_height)
 
         self.screen = screen
@@ -66,7 +66,7 @@ class Game:
         print(mouse_x, mouse_y)
 
         # Sprawdzanie koloru piksela w tym miejscu
-        color = self.screen.get_at((mouse_x, mouse_y))
+        color = self.background.get_at((mouse_x, mouse_y))
         #print(f"Kolor w miejscu kliknięcia: {color}")
         R, G, B, A = color  # Przypisanie wartości składowych koloru
         brightness = 0.2126 * R + 0.7152 * G + 0.0722 * B  # Obliczanie jasności
@@ -102,8 +102,18 @@ class Game:
                         self.start_wave()
 
                 if self.side_panel.handleTowerSelection(event, self.tower_group): 
-                    self.towers.insert(0, self.side_panel.getTower()) 
-                    self.Is = 1
+                    self.selectedTower = self.side_panel.getTower()
+
+                    if (self.get_color_at_mouse_click(event.pos)):
+                        self.towers.insert(0, self.selectedTower) 
+                        self.Is = 1
+
+                        self.money -= self.side_panel.getTower().cost
+                        self.side_panel.money = self.money 
+
+                    else:
+                        self.tower_group.remove(self.selectedTower)
+
 
 
                 if event.type == pygame.KEYDOWN:
@@ -113,7 +123,10 @@ class Game:
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_1:  # Lewy przycisk myszy
                     mouse_position = pygame.mouse.get_pos()  # Pobierz współrzędne myszy
                     print(mouse_position)
-                    self.tower = Cannon(position=mouse_position, image_path=self.tower_image_path,range=100,damage=100,animation_speed=100, name="Cannon", updateSidePanel=self.bottom_panel.drawSelectedTowerInfo)
+                    self.tower = Cannon(position=mouse_position, image_path=self.tower_image_path,range=200,damage=100,animation_speed=100, name="Cannon", updateSidePanel=self.bottom_panel.drawSelectedTowerInfo)
+                    self.money -= self.tower.cost
+                    self.side_panel.money = self.money
+
                     if (len(self.towers) == 1): 
                         self.towers[0].hideRadius()
 
@@ -129,19 +142,23 @@ class Game:
                         for tower in self.towers:
                             if tower.getRect().collidepoint(event.pos): 
                                 self.clickPos = (event.pos[0] - tower.getRect().x,  event.pos[1] - tower.getRect().y)
-                                if (tower.getMask().get_at(self.clickPos) == 1 and clicked == False ):  
+                                if (tower.getMask().get_at(self.clickPos) == 1 and clicked == False):  
                                     tower.showRadius()
-                                    # self.bottom_panel.drawSelectedTowerInfo(tower)
+                                    self.bottom_panel.drawSelectedTowerInfo(tower)
                                     clicked = True 
                                 else:
                                     tower.hideRadius()
-                                    # self.bottom_panel.clearPanel()
+                                    self.bottom_panel.clearPanel()
 
                             else:
                                 tower.hideRadius()
+                        
+                        if (clicked == False):
+                            self.bottom_panel.clearPanel()
 
-                        # if (clicked == False):
-                        #     self.bottom_panel.clearPanel()
+
+            # for tower in self.towers:
+            #     print(tower.getRect())
 
 
             self.draw()
@@ -157,12 +174,9 @@ class Game:
             pygame.display.flip()
 
     def draw(self):
-
+        print(self.tower_group)
         self.screen.blit(self.background, (0, 0))
         self.tower_group.draw(self.screen)
-        # Rysowanie linii łączących waypoints
-        # if len(self.waypoints) > 1:
-        #     pygame.draw.lines(self.screen, (0, 255, 0), False, self.waypoints2, 3)  # Zielona linia o grubości 3 pikseli
         self.screen.blit(self.windmill, (-10 * self.sf, -150 * self.sf))
         self.monsters.update()  # Aktualizuje wszystkie potwory w grupie
 
