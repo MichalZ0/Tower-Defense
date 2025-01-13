@@ -1,17 +1,19 @@
 from os import walk
 import pygame
 import math
+from os import getcwd, path
 
 from Components import TextModule 
 
 
 def isHovered(event): 
-    for button in Button.buttons:
-        if (button.buttonRect.collidepoint(event.pos)):
-            button.hover()
-        else:
-            button.color = 'blue'
+    # for button in Button.buttons:
+    #     if (button.buttonRect.collidepoint(event.pos)):
+    #         button.hover()
+    #     else:
+    #         button.color = 'blue'
         
+    pass
 
 class Button:
     buttons = []
@@ -27,40 +29,37 @@ class Button:
         self.image_path = image_path
         self.clickFunction = lambda: print('') 
 
-        self.font = pygame.font.Font("Fonts/OpenSans-Regular.ttf", textSize)
+        self.font = pygame.font.Font("Fonts/Pixeltype.ttf", textSize)
         self.textObject = self.font.render(self.text, True, (255,255,255))
         self.buttonSurface = pygame.Surface(( self.buttonRect.width, self.buttonRect.height ), pygame.SRCALPHA)
         self.hovered = 0
 
         self.contentPosition = contentPosition
         if (self.contentPosition==None):
-            self.contentPosition = (self.buttonSurface.get_width() / 2 - self.textObject.get_width() / 2, self.buttonSurface.get_height() / 2 - self.textObject.get_height() / 2)
+            self.contentPosition = [ self.buttonSurface.get_width() / 2 - self.textObject.get_width() / 2, self.buttonSurface.get_height() / 2 - self.textObject.get_height() / 2 ]
 
 
         if (hover == True): 
             self.hoverBg = hoverBg
+            Button.buttons.append(self)
 
-        Button.buttons.append(self)
+        self.buttonRect = pygame.draw.rect(self.buttonSurface, self.color, (0,0,self.buttonSurface.get_width(), self.buttonSurface.get_height()), 
+                         width=0, border_radius=self.borderRadius)
 
     
     def setPosition(self, pos):
         self.position = pos
 
     def draw(self):
-        self.buttonRect = pygame.draw.rect(self.buttonSurface, self.color, (0,0,self.buttonSurface.get_width(), self.buttonSurface.get_height()), 
-                         width=0, border_radius=self.borderRadius)
-
         self.buttonRect.x = self.position[0]
         self.buttonRect.y = self.position[1]
 
         if (self.image_path == None): 
             self.buttonSurface.blit(self.textObject, self.contentPosition)
         else:
-            self.buttonImg = pygame.image.load(self.image_path)
-            # self.buttonImg.fill('blue')
             self.buttonImg = pygame.transform.scale(self.buttonImg, self.size)
             self.buttonSurface.blit(self.buttonImg, (0,0)) 
-
+        
         self.screen.blit(self.buttonSurface, (self.position[0], self.position[1]))
 
 
@@ -144,7 +143,55 @@ class upgradeButton(Button):
 
         self.screen.blit(self.buttonSurface, (self.position[0], self.position[1]))
 
-        
+    
+class difficultyButton(Button): 
+    def __init__(self, screen):
+        super().__init__(screen, (600, 100), (0,0), "blue", "EASY", textSize=60)
+    
+        self.diffIcon = pygame.image.load(path.join(getcwd(), "creatures", "dragon.png"))
+        self.diffIcon = pygame.transform.scale(self.diffIcon, (100, 100))
 
+        self.contentPosition = (self.diffIcon.get_width() + (((self.size[0] - self.diffIcon.get_width())/2) - self.textObject.get_width()/2),
+                                0)
+
+        self.desc = TextModule.Text(self.buttonSurface, (0,self.textObject.get_height()), "PODSTAWOWY TRYB GRY", size=24)
+        self.descRect = pygame.Rect(self.diffIcon.get_width() + (((self.size[0] - self.diffIcon.get_width())/2) - self.desc.getSize()[0]/2), 
+                                    self.contentPosition[1] + self.textObject.get_height(),
+                                    self.desc.getSize()[0],
+                                    self.desc.getSize()[1])
+
+        self.desc.setPosition((self.descRect.x, self.descRect.y))
+
+        self.heartIcon = pygame.image.load(path.join(getcwd(), "assets", "miscelanneous", "heart_trim.png"))
+        self.heartIcon = pygame.transform.scale(self.heartIcon, (30,30))
+        self.heartIconRect = pygame.Rect(self.descRect.x, self.descRect.height + self.descRect.y, self.heartIcon.get_width(), self.heartIcon.get_height())
+
+        self.heartsNumber = TextModule.Text(self.buttonSurface, (0,0), "100", 30) 
+        self.heartsNumber.setPosition((self.heartIconRect.x + self.heartIconRect.width, self.heartIconRect.y + (self.heartIconRect.height/2)-(self.heartsNumber.getSize()[1]/2)))
+
+        self.coinIcon = pygame.image.load(path.join(getcwd(), "assets", "miscelanneous", "coin_trim.png"))
+        self.coinIcon = pygame.transform.scale(self.coinIcon, (30,30))
+        self.coinIconRect = pygame.Rect(self.heartIconRect.x + self.heartIconRect.width + self.heartsNumber.getSize()[0] + 25, self.heartIconRect.y, self.coinIcon.get_width(), self.coinIcon.get_height())
+
+
+        self.coinsNumber = TextModule.Text(self.buttonSurface, (0,0), "1000", 30)
+        self.coinsNumber.setPosition((self.coinIconRect.x + self.coinIconRect.width, self.heartsNumber.getPosition()[1]))
+
+
+
+                     
+
+    def draw(self):
+        super().draw()
+        self.buttonSurface.blit(self.diffIcon, (0,0))
+        self.desc.draw()
+
+        self.buttonSurface.blit(self.heartIcon, (self.heartIconRect.x,self.heartIconRect.y))
+        self.heartsNumber.draw()
+        
+        self.buttonSurface.blit(self.coinIcon, (self.coinIconRect.x, self.coinIconRect.y))
+        self.coinsNumber.draw()
+
+        self.screen.blit(self.buttonSurface, (0,0))
 
 

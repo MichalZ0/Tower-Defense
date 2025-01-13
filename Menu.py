@@ -24,8 +24,10 @@ class mainMenu:
 
         self.menuScreen = pygame.Surface((self.screenRect.width, self.screenRect.height))
         self.settingsScreen = pygame.Surface((self.screenRect.width, self.screenRect.height)) 
+        self.selectLevelScreen = pygame.Surface((self.screenRect.width, self.screenRect.height)) 
+        self.selectDifficultyScreen = pygame.Surface((self.screenRect.width, self.screenRect.height)) 
 
-        self.screens = [self.menuScreen, self.settingsScreen]
+        self.screens = [self.menuScreen, self.settingsScreen, self.selectLevelScreen, self.selectDifficultyScreen]
         self.currentScreen = 0; 
 
         self.screenWidth = self.menuScreen.get_size()[0]
@@ -61,15 +63,18 @@ class mainMenu:
 
         self.buttons = [self.startButton, self.settingsButton, self.exitButton]
 
-        self.startButton.onClick(self.startGame)
+        self.startButton.onClick(self.goToLevelSelection)
         self.exitButton.onClick(self.Exit)
         self.settingsButton.onClick(self.goToSettings)
 
         self.settings()
+        self.selectLevel()
+        self.selectDifficulty()
 
 
 
-
+    def goToLevelSelection(self):
+        self.currentScreen = 2
 
     def startGame(self):
         self.newGame = game.Game(self.screen, self.sf)
@@ -115,7 +120,11 @@ class mainMenu:
                 self.menuRun()
             if (self.currentScreen == 1):
                 self.settingsRun() 
+            if (self.currentScreen == 2):
+                self.selectLevelRun()
             if (self.currentScreen == 3): 
+                self.selectDifficultyRun()
+            if (self.currentScreen == 4): 
                 self.running, self.currentScreen = self.newGame.run()
                 
 
@@ -220,3 +229,135 @@ class mainMenu:
         self.applyButton.draw()
 
         self.screen.blit(self.settingsScreen, (0,0))
+    
+    def goToLeftElement(self): 
+        if (self.currentMapIdx == len(self.maps)-1): 
+            self.currentMapIdx = 0
+            self.selectLevelDraw()
+            return
+
+        self.currentMapIdx -= 1
+        self.selectLevelDraw()
+
+    def goToRightElement(self): 
+        if (self.currentMapIdx == len(self.maps)-1): 
+            self.currentMapIdx = 0
+        else:
+            self.currentMapIdx += 1
+
+        self.levelTitle = TextModule.Text(self.selectLevelScreen, (0,0), self.maps[self.currentMapIdx][0], 40)
+        self.levelTitle.setPosition((self.screenRect.width/2 - self.levelTitle.getSize()[0]/2, 
+                                     self.currentLevelImageRect.y + self.currentLevelImageRect.height +  50))
+
+        self.selectLevelDraw()
+
+    def selectLevel(self):
+        self.currentLevelSize = (300, 300)
+        self.mapPath = os.path.join(os.getcwd(), "assets", "map")
+        self.maps = [
+            ["Greenfield", pygame.transform.scale(pygame.image.load(os.path.join(self.mapPath, 'background.png')), self.currentLevelSize)],
+            ["Desert", pygame.transform.scale(pygame.image.load(os.path.join(self.mapPath, 'map_desert.png')), self.currentLevelSize)]
+        ]
+        self.currentMapIdx = 0
+
+        self.selectLevelText = TextModule.Text(self.selectLevelScreen, (0,0), "SELECT LEVEL", size=67)
+        self.selectTextCenterPos = (self.screenRect.width/2 - self.selectLevelText.getSize()[0]/2, 10)
+        self.selectLevelText.setPosition(self.selectTextCenterPos)
+
+        self.currentLevelImage = pygame.image.load(os.path.join(os.getcwd(), "assets", "map", "background.png")) 
+        self.currentLevelImageRect = pygame.Rect(self.screenRect.width/2 - self.currentLevelSize[0]/2, self.selectTextCenterPos[1] + 50, self.currentLevelSize[0], self.currentLevelSize[1])
+
+        self.leftArrowButton = ButtonModule.Button(self.selectLevelScreen, (50, 50), 
+                                                   (self.currentLevelImageRect.x - 50 - 10, 
+                                                    self.currentLevelImageRect.y + (self.currentLevelImageRect.height/2 - 50/2)), color="gray", text="")
+
+        self.rightArrowButton = ButtonModule.Button(self.selectLevelScreen, (50, 50), 
+                                                   (self.currentLevelImageRect.x + self.currentLevelImageRect.width + 10, 
+                                                    self.currentLevelImageRect.y + (self.currentLevelImageRect.height/2 - 50/2)), color="gray", text="")
+
+        self.rightArrowButton.onClick(self.goToRightElement)
+        self.leftArrowButton.onClick(self.goToLeftElement)
+
+        self.levelTitle = TextModule.Text(self.selectLevelScreen, (0,0), self.maps[self.currentMapIdx][0], 40)
+        self.levelTitle.setPosition((self.screenRect.width/2 - self.levelTitle.getSize()[0]/2, 
+                                     self.currentLevelImageRect.y + self.currentLevelImageRect.height +  50))
+
+        self.confirmButton = ButtonModule.Button(self.selectLevelScreen, (100, 50), (self.screenRect.width/2 - 100/2, 
+                                                                                     self.levelTitle.getPosition()[1] + self.levelTitle.getSize()[1]),
+                                                 "Brown", "Confirm")
+
+        self.confirmButton.onClick(self.goToDiffSelection)
+    def selectLevelRun(self):
+        while self.currentScreen == 2:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.running = False 
+                    return 
+
+                if (event.type == pygame.MOUSEBUTTONDOWN): 
+                    self.leftArrowButton.clicked(event)
+                    self.rightArrowButton.clicked(event)
+
+                    self.confirmButton.clicked(event)
+
+            self.selectLevelDraw()
+            pygame.display.update()
+
+    def selectLevelDraw(self):
+        self.selectLevelScreen.fill('#000000')
+        self.selectLevelScreen.blit(self.maps[self.currentMapIdx][1], self.currentLevelImageRect)
+
+        self.leftArrowButton.draw()
+        self.rightArrowButton.draw()
+
+        pygame.draw.polygon(self.selectLevelScreen, "white", 
+                            ((self.leftArrowButton.getRect().x + self.leftArrowButton.getRect().width - 10, self.leftArrowButton.getRect().y + 10),
+                            (self.leftArrowButton.getRect().x + 10, self.leftArrowButton.getRect().y + self.leftArrowButton.getRect().height/2), 
+                            (self.leftArrowButton.getRect().x + self.leftArrowButton.getRect().width - 10, self.leftArrowButton.getRect().y + self.leftArrowButton.getRect().height - 10)))
+
+        pygame.draw.polygon(self.selectLevelScreen, "white", 
+                            ((self.rightArrowButton.getRect().x + 10, self.rightArrowButton.getRect().y + 10),
+                            (self.rightArrowButton.getRect().x + self.rightArrowButton.getRect().width - 10, self.rightArrowButton.getRect().y + self.rightArrowButton.getRect().height/2), 
+                            (self.rightArrowButton.getRect().x + 10, self.rightArrowButton.getRect().y + self.rightArrowButton.getRect().height - 10)))
+
+        self.levelTitle.draw()
+        self.confirmButton.draw()
+        self.selectLevelText.draw()
+
+        self.screen.blit(self.selectLevelScreen, (0,0))
+    
+    def goToDiffSelection(self):
+        self.currentScreen = 3
+
+    def selectDifficulty(self): 
+        self.optionSize = [500, 100]
+
+        self.header = TextModule.Text(self.selectDifficultyScreen, (0,0), "SELECT DIFFICULTY", size=60)
+        self.header.setPosition((self.screenWidth/2-self.header.getSize()[0]/2, 10))
+
+        self.easy = ButtonModule.difficultyButton(self.selectDifficultyScreen)
+        
+
+    def selectDifficultyRun(self):
+        while self.currentScreen == 3:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.running = False 
+                    return 
+
+                if (event.type == pygame.MOUSEBUTTONDOWN): 
+                    self.leftArrowButton.clicked(event)
+                    self.rightArrowButton.clicked(event)
+
+            self.selectDifficultyDraw()
+            pygame.display.update()
+
+    def selectDifficultyDraw(self):
+        self.selectDifficultyScreen.fill('black')
+
+        self.header.draw()
+
+        
+        self.easy.draw()
+
+        self.screen.blit(self.selectDifficultyScreen, (0,0))

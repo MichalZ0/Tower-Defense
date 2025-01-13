@@ -2,7 +2,7 @@ import pygame
 import os
 
 class Text:
-    def __init__(self, screen, position, text, size=12, color = (255,255,255), fontFamily='Pixeltype.ttf', centerX=False):
+    def __init__(self, screen, position, text, size=12, color = (255,255,255), fontFamily='ARCADECLASSIC.TTF', centerX=False):
         self.screen = screen
         self.size = size
         self.fontFamily = os.path.join(os.getcwd(), "Fonts", fontFamily)
@@ -12,6 +12,7 @@ class Text:
 
         self.font = pygame.font.Font(self.fontFamily, self.size)
         self.textSurface = self.font.render(self.text, True, self.color)
+        # pygame.draw.rect(self.textSurface, "white", (0,0,self.textSurface.get_width(),self.textSurface.get_height()), width=1)
 
 
     def draw(self):
