@@ -155,17 +155,17 @@ class upgradeButton(Button):
 
         if (rect != None):
             self.buttonClickRect = rect
-            print("nic2")
+            #print("nic2")
         else:
             self.buttonClickRect = self.buttonRect
-            print("nic1")
+            #print("nic1")
 
         pozycja=[0,0]
         pozycja[0]=event.pos[0]
         pozycja[1]=event.pos[1]
         pozycja[1]=pozycja[1]-500
-        print(pozycja)
-        print(event.pos)
+        #print(pozycja,"pos")
+        #print(event.pos,"event")
         if (self.buttonClickRect.collidepoint(pozycja)):
 
 

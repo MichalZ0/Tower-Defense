@@ -149,6 +149,9 @@ class BottomPanel():
                                           "blue", text='', upgradeTitle=self.firstUpgradeName,
                                           image_path=os.path.join(os.getcwd(), 'assets', 'towers', 'Witchhouse3',
                                                                   'Witchhouse0.png'), upgradeCost='100')
+            self.Is = 1
+            self.Tower = tower
+            self.upgrade1.draw()
 
         if tower.name == "Factory":
                 # print("przycisk")

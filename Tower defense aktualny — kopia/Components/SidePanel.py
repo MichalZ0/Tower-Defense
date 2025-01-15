@@ -213,15 +213,15 @@ class SidePanel:
                     if (self.towerClicked == True):
                         self.newTower = towerMap[towerButton.getText()](self.drawTowerPosition,
                                                                         self.itemPath,
-                                                                        100,
-                                                                        100,
+                                                                        300,
+                                                                        300,
                                                                         1,
                                                                         towerButton.getText())
                         break 
 
         if (event.type == pygame.MOUSEMOTION and self.towerClicked == True):
 
-
+            #print(event.pos,"event pos")
             if (event.pos[0] > 0 and
                 event.pos[0] - self.newTower.getRect().width/2 > 0 and 
                 event.pos[0] <= self.towerPanelRect.x): 
@@ -232,14 +232,20 @@ class SidePanel:
                 self.newTower.setPosition(event.pos)
 
                 self.newTower.showRadius()
+                #self.newTower.setPosition(pos)
             
 
             elif (event.pos[0] > self.towerPanelRect.x):
                 sprites.remove(self.newTower)
+              #  print("joehfwiuehfp")
 
             if (event.buttons[0] == 0):
                 self.towerClicked = False
                 self.newTower.hideRadius()
+                print(event.pos)
+                self.newTower.setPosition(event.pos)
+                print(self.newTower.position)
+                #rn True
                 
                 return True
 

@@ -11,7 +11,7 @@ class Cannon(pygame.sprite.Sprite):
     def __init__(self, position, image_path, range, damage,animation_speed, name='', updateSidePanel=None):
         super().__init__()
         self.name = "Cannon"
-        self.damage = damage
+        self.damage = 100
         self.image_path=image_path
         self.position=position
         self.framesPath = os.path.join(image_path, 'Cannon')
@@ -34,6 +34,7 @@ class Cannon(pygame.sprite.Sprite):
         #self.rect.center = position
 
         self.range = range
+
         self.damage = damage
         self.income=0
         self.generated_income = False
@@ -102,16 +103,33 @@ class Cannon(pygame.sprite.Sprite):
         self.image = newSprite
 
     def showRadius(self):
-        self.towerRadiusSprite = pygame.Surface((self.range, self.range), pygame.SRCALPHA)
+        # Tworzenie przezroczystej powierzchni dla zasięgu
+        self.towerRadiusSprite = pygame.Surface((self.range * 2, self.range * 2), pygame.SRCALPHA)
+
+        # Rysowanie okręgu na środku powierzchni
         pygame.draw.circle(self.towerRadiusSprite,
                            "white",
-                           (self.range / 2, self.range / 2),
-                           self.range/2,
+                           (self.range, self.range),  # Środek okręgu to środek powierzchni
+                           self.range,
                            3)
 
-        self.towerRadiusSprite.blit(self.image, (0,0))
+        # Wyliczenie przesunięcia, aby wieża była na środku okręgu
+        offset_x = self.range - self.image.get_width() // 2
+        offset_y = self.range - self.image.get_height() // 2
+
+        # Rysowanie obrazu wieży w centrum okręgu
+        self.towerRadiusSprite.blit(self.image, (offset_x,offset_y))
+
+        # Aktualizacja obrazu wieży
         self.image = self.towerRadiusSprite
+        #self.rect.center = (offset_x, offset_y)
+
+        # Ustawienie flagi, że zasięg jest widoczny
         self.shouldShowRadius = True
+        #pos=[offset_x,offset_y]
+        #return pos
+        print(self.rect,"pozycja z radiusem",self.position)
+
 
 
     def getMask(self):
@@ -120,12 +138,14 @@ class Cannon(pygame.sprite.Sprite):
     def hideRadius(self):
         self.image = self.imageCopy
         self.shouldShowRadius = False
+        #print(self.rect,"pozycja bez radiusa")
 
     def getFirstFrame(self):
         return self.frames[0]
 
     def setPosition(self, newPosition):
         self.rect = self.image.get_rect(center=newPosition)
+        self.position=newPosition
         
 
     def animate(self):
@@ -137,6 +157,7 @@ class Cannon(pygame.sprite.Sprite):
 
         self.current_frame = (self.current_frame + 1) % len(self.frames)
         self.image = self.frames[self.current_frame]
+        self.imageCopy=self.image
         self.last_animate_time = current_time
 
     def getBullets(self):
@@ -185,7 +206,7 @@ class MageTower(Cannon):
         super().__init__(position, image_path, range, damage, animation_speed,updateSidePanel=None)
 
             # Zmiana ścieżki do animacji (na animację wieży maga)
-        self.rect.center = (16, 16)
+        #self.rect.center = (16, 16)
         self.name="MageTower"
         self.level=0
         self.level2=0
@@ -345,7 +366,7 @@ class Archer(Cannon):
         if self.level == 0:
             self.damage+=100
             self.range+=100
-            self.framesPath = os.path.join(self.image_path, 'Archer1')
+            self.framesPath = os.path.join(self.image_path, 'Archer3')
             self.frames = [pygame.image.load(os.path.join(self.framesPath, 'Archer0.png')).convert_alpha(),
                            pygame.image.load(os.path.join(self.framesPath, 'Archer1.png')).convert_alpha(),
                            pygame.image.load(os.path.join(self.framesPath, 'Archer2.png')).convert_alpha(),
