@@ -1,3 +1,5 @@
+from pygments.styles.dracula import background
+
 from creatures import *
 from defenders import *
 from Components.SidePanel import SidePanel
@@ -27,6 +29,7 @@ class Game:
         self.width, self.height = self.screen.get_width(), self.screen.get_height()
         self.bgPath = os.path.join(os.getcwd(), 'assets', 'background.png')
         self.background = pygame.image.load(self.bgPath)
+        self.background = pygame.image.load('assets/map/map_cave.png')
         self.windmill = pygame.transform.scale(pygame.image.load("assets/map/blacksmith.png"), (250*sf, 250*sf))
         self.windmill = pygame.transform.flip(self.windmill, True, False)
         self.heart = pygame.transform.scale(pygame.image.load("assets/miscelanneous/heart.png"), (350, 350))
@@ -38,8 +41,9 @@ class Game:
         self.current_wave = 1
         self.waves = Waves(self.sf, self.screen)
 
+        #DO MAPY 1
+        #self.waypoints = [(580/8*self.sf, 3100/6*self.sf), (580/8*self.sf, 2070/6*self.sf), (1580/8*self.sf, 2070/6*self.sf), (1580/8*self.sf, 1270/6*self.sf), (700/8*self.sf, 1270/6*self.sf), (700/8*self.sf, 600/6*self.sf), (2310/8*self.sf, 600/6*self.sf), (2310/8*self.sf, 2440/6*self.sf), (3720/8*self.sf, 2440/6*self.sf), (3720/8*self.sf, 1750/6*self.sf), (3050/8*self.sf, 1750/6*self.sf), (3050/8*self.sf, 400/6*self.sf), (3600/8*self.sf, 400/6*self.sf), (3600/8*self.sf, 1275/6*self.sf), (4500/8*self.sf, 1275/6*self.sf)]
 
-        self.waypoints = [(580/8*self.sf, 3100/6*self.sf), (580/8*self.sf, 2070/6*self.sf), (1580/8*self.sf, 2070/6*self.sf), (1580/8*self.sf, 1270/6*self.sf), (700/8*self.sf, 1270/6*self.sf), (700/8*self.sf, 600/6*self.sf), (2310/8*self.sf, 600/6*self.sf), (2310/8*self.sf, 2440/6*self.sf), (3720/8*self.sf, 2440/6*self.sf), (3720/8*self.sf, 1750/6*self.sf), (3050/8*self.sf, 1750/6*self.sf), (3050/8*self.sf, 400/6*self.sf), (3600/8*self.sf, 400/6*self.sf), (3600/8*self.sf, 1275/6*self.sf), (4500/8*self.sf, 1275/6*self.sf)]
 
         '''
         self.waypoints2 = []
@@ -192,9 +196,7 @@ class Game:
         self.screen.blit(self.background, (0, 0))
         self.tower_group.draw(self.screen)
         # Rysowanie linii łączących waypoints
-        # if len(self.waypoints) > 1:
-        #     pygame.draw.lines(self.screen, (0, 255, 0), False, self.waypoints2, 3)  # Zielona linia o grubości 3 pikseli
-        self.screen.blit(self.windmill, (-10 * self.sf, -150 * self.sf))
+        #self.screen.blit(self.windmill, (-10 * self.sf, -150 * self.sf))
         self.monsters.update()  # Aktualizuje wszystkie potwory w grupie
 
         if self.Is ==1:
@@ -215,6 +217,6 @@ class Game:
 
 
         self.side_panel.draw(self.waves.wave_num, self.max_waves, self.waves.wave_running, self.waves.won, self.waves.lost)
-        self.bottom_panel.draw()
+        #self.bottom_panel.draw()
 
 
