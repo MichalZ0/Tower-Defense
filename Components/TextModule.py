@@ -32,3 +32,4 @@ class Text:
 
     def setText(self, text):
         self.text = text 
+        self.textSurface = self.font.render(self.text, True, self.color)

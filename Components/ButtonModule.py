@@ -49,6 +49,9 @@ class Button:
     
     def setPosition(self, pos):
         self.position = pos
+        self.buttonRect.x = self.position[0]
+        self.buttonRect.y = self.position[1]
+
 
     def draw(self):
         self.buttonRect.x = self.position[0]
@@ -57,6 +60,7 @@ class Button:
         if (self.image_path == None): 
             self.buttonSurface.blit(self.textObject, self.contentPosition)
         else:
+            self.buttonImg = pygame.image.load(self.image_path)
             self.buttonImg = pygame.transform.scale(self.buttonImg, self.size)
             self.buttonSurface.blit(self.buttonImg, (0,0)) 
         
@@ -109,7 +113,7 @@ class Button:
 
 
 class upgradeButton(Button):
-    def __init__(self, screen, size, position, color, text, image_path, upgradeTitle, upgradeCost):
+    def __init__(self, screen, size, position, color, text, image_path, upgradeTitle, upgradeCost, upgradedTower=None):
         Button.__init__(self, screen, size, position, color, text)
         self.image_path = image_path
 
@@ -125,10 +129,12 @@ class upgradeButton(Button):
 
         self.upgradeImage = pygame.image.load(image_path)
         self.upgradeImage = pygame.transform.scale(self.upgradeImage, (40, 40))
-    
+
+        self.clickFunction = lambda: self.upgrade(upgradedTower)
+
     def draw(self):
         self.buttonRect = pygame.draw.rect(self.buttonSurface, self.color, (0,0,self.buttonSurface.get_width(), self.buttonSurface.get_height()), 
-                         width=0, border_radius=self.borderRadius)
+                                           width=0, border_radius=self.borderRadius)
 
         self.buttonRect.x = self.position[0]
         self.buttonRect.y = self.position[1]
@@ -136,62 +142,98 @@ class upgradeButton(Button):
         self.buttonSurface.blit(self.upgradeTitle, (self.buttonRect.width/2 - self.upgradeTitle.get_width()/2, 0))
         self.buttonSurface.blit(self.upgradeCost, (self.buttonRect.width/2 - self.upgradeCost.get_rect().width/2, self.buttonRect.height-self.upgradeCost.get_height()))
 
-        
+
         self.buttonSurface.blit(self.upgradeImage, (self.buttonRect.width/2 - self.upgradeImage.get_rect().width/2, 
                                                     (self.upgradeTitle.get_height() + (self.buttonRect.height - self.upgradeTitle.get_height() - self.upgradeCost.get_height())/2  - self.upgradeImage.get_height()/2) 
                                                     ))
 
         self.screen.blit(self.buttonSurface, (self.position[0], self.position[1]))
-
     
+       
+    def upgrade(self, tower):
+        print('here he upgrade')
+        tower.upgrade()
+        
+
+
+
+
 class difficultyButton(Button): 
-    def __init__(self, screen):
-        super().__init__(screen, (600, 100), (0,0), "blue", "EASY", textSize=60)
-    
-        self.diffIcon = pygame.image.load(path.join(getcwd(), "creatures", "dragon.png"))
-        self.diffIcon = pygame.transform.scale(self.diffIcon, (100, 100))
+    def __init__(self, screen, size, pos, color, icon, text, desc, health, coin, waves):
+        super().__init__(screen, size, pos, color, "", textSize=0, borderRadius=25)
 
-        self.contentPosition = (self.diffIcon.get_width() + (((self.size[0] - self.diffIcon.get_width())/2) - self.textObject.get_width()/2),
-                                0)
+        self.iconNumberSpacing = 8 
+        self.valueGap = 50
+        self.header = TextModule.Text(None, (0,0), text, size=48)    
 
-        self.desc = TextModule.Text(self.buttonSurface, (0,self.textObject.get_height()), "PODSTAWOWY TRYB GRY", size=24)
-        self.descRect = pygame.Rect(self.diffIcon.get_width() + (((self.size[0] - self.diffIcon.get_width())/2) - self.desc.getSize()[0]/2), 
-                                    self.contentPosition[1] + self.textObject.get_height(),
-                                    self.desc.getSize()[0],
-                                    self.desc.getSize()[1])
+        self.diffIcon = pygame.transform.scale(icon, (75, 75))
 
-        self.desc.setPosition((self.descRect.x, self.descRect.y))
-
+        self.desc = TextModule.Text(None, (0,self.textObject.get_height()),desc, size=24)
+        self.desc.setPosition((0, self.header.getPosition()[1] + self.header.getSize()[1]))
+        #
         self.heartIcon = pygame.image.load(path.join(getcwd(), "assets", "miscelanneous", "heart_trim.png"))
         self.heartIcon = pygame.transform.scale(self.heartIcon, (30,30))
-        self.heartIconRect = pygame.Rect(self.descRect.x, self.descRect.height + self.descRect.y, self.heartIcon.get_width(), self.heartIcon.get_height())
+        self.heartIconRect = pygame.Rect(self.desc.getPosition()[0], self.desc.getPosition()[1] + self.desc.getSize()[1], self.heartIcon.get_width(), self.heartIcon.get_height())
 
-        self.heartsNumber = TextModule.Text(self.buttonSurface, (0,0), "100", 30) 
-        self.heartsNumber.setPosition((self.heartIconRect.x + self.heartIconRect.width, self.heartIconRect.y + (self.heartIconRect.height/2)-(self.heartsNumber.getSize()[1]/2)))
-
+        self.heartsNumber = TextModule.Text(None, (0,0), health, 30) 
+        self.heartsNumber.setPosition((self.heartIconRect.x + self.heartIconRect.width + self.iconNumberSpacing, self.heartIconRect.y + (self.heartIconRect.height/2)-(self.heartsNumber.getSize()[1]/2)))
+        #
         self.coinIcon = pygame.image.load(path.join(getcwd(), "assets", "miscelanneous", "coin_trim.png"))
         self.coinIcon = pygame.transform.scale(self.coinIcon, (30,30))
-        self.coinIconRect = pygame.Rect(self.heartIconRect.x + self.heartIconRect.width + self.heartsNumber.getSize()[0] + 25, self.heartIconRect.y, self.coinIcon.get_width(), self.coinIcon.get_height())
+        self.coinIconRect = pygame.Rect(self.heartIconRect.x + self.heartIconRect.width + self.heartsNumber.getSize()[0] + self.valueGap, self.heartIconRect.y, self.coinIcon.get_width(), self.coinIcon.get_height())
+
+        self.coinsNumber = TextModule.Text(None, (0,0), coin, 30)
+        self.coinsNumber.setPosition((self.coinIconRect.x + self.coinIconRect.width + self.iconNumberSpacing, self.heartsNumber.getPosition()[1]))
+
+        self.roundsIcon = pygame.image.load(path.join(getcwd(), "assets", "miscelanneous", "coin_trim.png")) 
+        self.roundsIcon = pygame.transform.scale(self.roundsIcon, (30,30))
+        self.roundsIconRect = pygame.Rect(self.coinIconRect.x + self.coinIconRect.width + self.coinsNumber.getSize()[0] + self.valueGap, self.heartIconRect.y, self.roundsIcon.get_width(), self.roundsIcon.get_height())
+        #
+        #
+        self.roundsNumber = TextModule.Text(None, (0,0), waves, 30)
+        self.roundsNumber.setPosition((self.roundsIconRect.x + self.roundsIconRect.width + self.iconNumberSpacing, self.heartsNumber.getPosition()[1]))
+        #
 
 
-        self.coinsNumber = TextModule.Text(self.buttonSurface, (0,0), "1000", 30)
-        self.coinsNumber.setPosition((self.coinIconRect.x + self.coinIconRect.width, self.heartsNumber.getPosition()[1]))
+
+        self.finalSize = (self.roundsNumber.getPosition()[0] + self.roundsNumber.getSize()[0] - self.heartIconRect.x, 
+                          self.heartIconRect.y + self.heartIconRect.height - self.header.getPosition()[1]) 
 
 
+        self.centerSurface = pygame.Surface(self.finalSize, pygame.SRCALPHA)
 
-                     
+        self.header.setPosition((self.centerSurface.get_width()/2 - (self.header.getSize()[0]/2) , self.header.getPosition()[1]))
+        self.desc.setPosition((self.centerSurface.get_width()/2 - (self.desc.getSize()[0]/2) , self.desc.getPosition()[1]))
 
-    def draw(self):
-        super().draw()
-        self.buttonSurface.blit(self.diffIcon, (0,0))
+        self.desc.screen = self.centerSurface
+        self.header.screen = self.centerSurface
+        self.coinsNumber.screen = self.centerSurface
+        self.heartsNumber.screen = self.centerSurface
+        self.roundsNumber.screen = self.centerSurface
+
+        self.header.draw()
         self.desc.draw()
 
-        self.buttonSurface.blit(self.heartIcon, (self.heartIconRect.x,self.heartIconRect.y))
+        self.centerSurface.blit(self.heartIcon, (self.heartIconRect.x,self.heartIconRect.y ))
         self.heartsNumber.draw()
-        
-        self.buttonSurface.blit(self.coinIcon, (self.coinIconRect.x, self.coinIconRect.y))
+
+        self.centerSurface.blit(self.coinIcon, (self.coinIconRect.x,self.coinIconRect.y ))
         self.coinsNumber.draw()
 
-        self.screen.blit(self.buttonSurface, (0,0))
+        self.centerSurface.blit(self.roundsIcon, (self.roundsIconRect.x,self.roundsIconRect.y ))
+        self.roundsNumber.draw()
+
+        self.diffIconPos = (self.size[0]/2 - ((self.diffIcon.get_width() + self.centerSurface.get_width())/2 + 30),
+                            (self.size[1]/2) - (self.diffIcon.get_height()/2))
+        
+
+
+    def draw(self):
+        # super().draw()
+        self.buttonSurface.blit(self.diffIcon, self.diffIconPos)
+        self.buttonSurface.blit(self.centerSurface, (self.diffIconPos[0] + self.diffIcon.get_width() + 30,
+                                                     self.size[1]/2  - (self.centerSurface.get_height()/2)))
+                                                     
+        self.screen.blit(self.buttonSurface, self.position)
 
 

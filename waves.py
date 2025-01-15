@@ -13,6 +13,13 @@ class Waves:
         self.wave_running = False
         self.won = False
         self.lost = False
+
+        self.map_base_spawn_point = (670/8, 170/6) #dla mapy 3
+        self.map_start_coefficient_x = -math.sqrt(2)
+        self.map_start_coefficient_y = -math.sqrt(2) #tymczasowo (), bedzie zalezne od mapy zeby potwory sie spawnowaly bardziej w dol/gore/lewo/raczej nie prawo
+        #DO MAPY 1
+
+        #DO MAPY 1
         self.waypoints = [(580/8*self.sf, 3100/6*self.sf), (580/8*self.sf, 2070/6*self.sf),
                           (1580/8*self.sf, 2070/6*self.sf), (1580/8*self.sf, 1270/6*self.sf),
                           (700/8*self.sf, 1270/6*self.sf), (700/8*self.sf, 600/6*self.sf),
@@ -21,6 +28,58 @@ class Waves:
                           (3050/8*self.sf, 1750/6*self.sf), (3050/8*self.sf, 400/6*self.sf),
                           (3600/8*self.sf, 400/6*self.sf), (3600/8*self.sf, 1275/6*self.sf),
                           (4500/8*self.sf, 1275/6*self.sf)]
+        #DO MAPY 2
+        self.waypoints = [(1980 / 8 * self.sf, 2680 / 6 * self.sf), (2180 / 8 * self.sf, 2580 / 6 * self.sf),
+                          (2480 / 8 * self.sf, 2680 / 6 * self.sf), (3080 / 8 * self.sf, 3180 / 6 * self.sf),
+                          (3380 / 8 * self.sf, 3220 / 6 * self.sf), (3730 / 8 * self.sf, 3220 / 6 * self.sf),
+                          (4030 / 8 * self.sf, 3120 / 6 * self.sf), (4310 / 8 * self.sf, 2890 / 6 * self.sf),
+                          (4510 / 8 * self.sf, 2690 / 6 * self.sf), (4685 / 8 * self.sf, 2390 / 6 * self.sf),
+                          (4735 / 8 * self.sf, 2090 / 6 * self.sf), (4725 / 8 * self.sf, 1790 / 6 * self.sf),
+                          (4700 / 8 * self.sf, 1490 / 6 * self.sf), (4620 / 8 * self.sf, 1190 / 6 * self.sf),
+                          (4510 / 8 * self.sf, 990 / 6 * self.sf), (4110 / 8 * self.sf, 790 / 6 * self.sf),
+                          (3950 / 8 * self.sf, 680 / 6 * self.sf), (3710 / 8 * self.sf, 680 / 6 * self.sf),
+                          (3390 / 8 * self.sf, 780 / 6 * self.sf), (3210 / 8 * self.sf, 910 / 6 * self.sf),
+                          (3110 / 8 * self.sf, 1110 / 6 * self.sf), (3150 / 8 * self.sf, 1410 / 6 * self.sf),
+                          (3400 / 8 * self.sf, 1810 / 6 * self.sf), (3400 / 8 * self.sf, 1910 / 6 * self.sf),
+                          (3200 / 8 * self.sf, 2110 / 6 * self.sf), (2800 / 8 * self.sf, 2260 / 6 * self.sf),
+                          (2400 / 8 * self.sf, 2340 / 6 * self.sf), (2000 / 8 * self.sf, 2320 / 6 * self.sf),
+                          (1700 / 8 * self.sf, 2220 / 6 * self.sf), (1500 / 8 * self.sf, 2000 / 6 * self.sf),
+                          (1350 / 8 * self.sf, 1700 / 6 * self.sf), (1330 / 8 * self.sf, 1450 / 6 * self.sf),
+                          (1530 / 8 * self.sf, 1250 / 6 * self.sf), (1860 / 8 * self.sf, 1080 / 6 * self.sf),
+                          (1990 / 8 * self.sf, 1000 / 6 * self.sf), (2220 / 8 * self.sf, 880 / 6 * self.sf),
+                          (2120 / 8 * self.sf, 765 / 6 * self.sf), (1960 / 8 * self.sf, 655 / 6 * self.sf),
+                          (1660 / 8 * self.sf, 535 / 6 * self.sf), (1260 / 8 * self.sf, 445 / 6 * self.sf),
+                          (1160 / 8 * self.sf, 445 / 6 * self.sf), (960 / 8 * self.sf, 495 / 6 * self.sf),
+                          (790 / 8 * self.sf, 595 / 6 * self.sf), (600 / 8 * self.sf, 895 / 6 * self.sf),
+                          (580 / 8 * self.sf, 1095 / 6 * self.sf), (730 / 8 * self.sf, 1485 / 6 * self.sf),
+                          (730 / 8 * self.sf, 1535 / 6 * self.sf), (610 / 8 * self.sf, 1595 / 6 * self.sf),
+                          (500 / 8 * self.sf, 1675 / 6 * self.sf), (400 / 8 * self.sf, 1695 / 6 * self.sf),
+                          (350 / 8 * self.sf, 1695 / 6 * self.sf)
+                          ]
+        # DO MAPY 3
+        self.waypoints = [(920 / 8 * self.sf, 420 / 6 * self.sf), (1235 / 8 * self.sf, 660 / 6 * self.sf),
+                          (605 / 8 * self.sf, 1080 / 6 * self.sf), (605 / 8 * self.sf, 1280 / 6 * self.sf),
+                          (1050 / 8 * self.sf, 1630 / 6 * self.sf), (700 / 8 * self.sf, 2190 / 6 * self.sf),
+                          (900 / 8 * self.sf, 2490 / 6 * self.sf), (1100 / 8 * self.sf, 2590 / 6 * self.sf),
+                          (1250 / 8 * self.sf, 2590 / 6 * self.sf), (1500 / 8 * self.sf, 2590 / 6 * self.sf),
+                          (1660 / 8 * self.sf, 2590 / 6 * self.sf),
+                          (1720 / 8 * self.sf, 2700 / 6 * self.sf), (1800 / 8 * self.sf, 2800 / 6 * self.sf),
+                          (2380 / 8 * self.sf, 3180 / 6 * self.sf), (3080 / 8 * self.sf, 3140 / 6 * self.sf),
+                          (3480 / 8 * self.sf, 3080 / 6 * self.sf), (3580 / 8 * self.sf, 2780 / 6 * self.sf),
+                          (3520 / 8 * self.sf, 2720 / 6 * self.sf), (3500 / 8 * self.sf, 2580 / 6 * self.sf),
+                          (3430 / 8 * self.sf, 2540 / 6 * self.sf), (3680 / 8 * self.sf, 2610 / 6 * self.sf),
+                          (3850 / 8 * self.sf, 2610 / 6 * self.sf), (4050 / 8 * self.sf, 2510 / 6 * self.sf),
+                          (4200 / 8 * self.sf, 2410 / 6 * self.sf), (4230 / 8 * self.sf, 2110 / 6 * self.sf),
+                          (4200 / 8 * self.sf, 1910 / 6 * self.sf), (4000 / 8 * self.sf, 1730 / 6 * self.sf),
+                          (3920 / 8 * self.sf, 1700 / 6 * self.sf), (3920 / 8 * self.sf, 1670 / 6 * self.sf),
+                          (4320 / 8 * self.sf, 1270 / 6 * self.sf), (4220 / 8 * self.sf, 1070 / 6 * self.sf),
+                          (3620 / 8 * self.sf, 730 / 6 * self.sf),
+                          (3300 / 8 * self.sf, 370 / 6 * self.sf), (3300 / 8 * self.sf, 170 / 6 * self.sf), (3520 / 8 * self.sf, 0 / 6 * self.sf)]
+
+
+        scale_x = 650 / 650  # Współczynnik skali w osi X
+        scale_y = 470 / 600  # Współczynnik skali w osi Y
+        self.waypoints = [(x * scale_x, y * scale_y) for x, y in self.waypoints]
 
         self.Troll = Troll((-250 / 8 * self.sf, 3100 / 6 * self.sf), self.waypoints,
               (64 * self.sf, 50 * self.sf), self.sf)
@@ -45,19 +104,9 @@ class Waves:
         if self.wave_num <= self.max_waves:
             self.wave_running = True
             if self.wave_num == 1:
-                self.monsters.add(Goblin((-250 / 8 * self.sf, 3100 / 6 * self.sf), self.waypoints,(44 * self.sf, 44 * self.sf),self.sf,speed=1))
-                self.monsters.add(Thief((-550 / 8 * self.sf, 3100 / 6 * self.sf), self.waypoints, (50 * self.sf, 50 * self.sf),self.sf, speed=1))
-                self.monsters.add(Troll((-850 / 8 * self.sf, 3100 / 6 * self.sf), self.waypoints, (58 * self.sf, 58 * self.sf),self.sf, speed=1))
-                self.monsters.add(Ghost((-1150 / 8 * self.sf, 3100 / 6 * self.sf), self.waypoints, (44 * self.sf, 44 * self.sf),self.sf, speed=1))
-                self.monsters.add(Hydra((-1450 / 8 * self.sf, 3100 / 6 * self.sf), self.waypoints, (73 * self.sf, 60 * self.sf),self.sf, speed=1))
-                self.monsters.add(Skeleton((-1750 / 8 * self.sf, 3100 / 6 * self.sf), self.waypoints, (52 * self.sf, 54 * self.sf),self.sf, speed=1))
-                self.monsters.add(Dragon((-2150 / 8 * self.sf, 3100 / 6 * self.sf), self.waypoints, (70 * self.sf, 70 * self.sf),self.sf, speed=1))
-                self.monsters.add(
-                    Dragon((-2150 / 8 * self.sf, 3100 / 6 * self.sf), self.waypoints, (70 * self.sf, 70 * self.sf),
-                           self.sf, speed=9))
-                self.monsters.add(
-                    Dragon((-2150 / 8 * self.sf, 3100 / 6 * self.sf), self.waypoints, (70 * self.sf, 70 * self.sf),
-                           self.sf, speed=9))
+                    self.monsters.add(
+                        Goblin(((self.map_base_spawn_point[0]+self.map_start_coefficient_x, self.map_base_spawn_point[1]+self.map_start_coefficient_y)), self.waypoints, (44 * self.sf, 44 * self.sf),
+                               self.sf, speed=1))
 
 
             elif self.wave_num == 2:

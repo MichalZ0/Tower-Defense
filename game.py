@@ -1,3 +1,5 @@
+from pygments.styles.dracula import background
+
 from creatures import *
 from defenders import *
 from Components.SidePanel import SidePanel
@@ -14,9 +16,13 @@ class Game:
             self.max_waves = 50
             self.money = 1000
         elif difficulty == "challenging":
-            pass
+            self.health = 100 
+            self.max_waves = 60 
+            self.money = 750 
         elif difficulty == "nightmare":
-            pass
+            self.health = 50 
+            self.max_waves = 75 
+            self.money = 500 
         self.side_panel_width = 150
         self.bottom_panel_height = 130
 
@@ -44,7 +50,8 @@ class Game:
         self.width, self.height = self.screen.get_width(), self.screen.get_height()
         print("w, h", self.width, self.height)
         self.bgPath = os.path.join(os.getcwd(), "assets", "background.png")
-        self.background = pygame.image.load(self.bgPath)
+        # self.background = pygame.image.load(self.bgPath)
+        self.background = pygame.image.load('assets/map/map_cave.png')
         self.windmill = pygame.transform.scale(
             pygame.image.load("assets/map/blacksmith.png"), (250 * sf, 250 * sf)
         )
@@ -64,28 +71,31 @@ class Game:
 
         self.background.blit(self.windmill, (-10 * self.sf, -150 * self.sf))
 
+        print('rozmiar mapy', self.background.get_size())
+
         # Inicjalizacja grupy potworów
         self.monsters = pygame.sprite.Group()
         self.current_wave = 1
         self.waves = Waves(self.sf, self.screen)
 
-        self.waypoints = [
-            (580 / 8 * self.sf, 3100 / 6 * self.sf),
-            (580 / 8 * self.sf, 2070 / 6 * self.sf),
-            (1580 / 8 * self.sf, 2070 / 6 * self.sf),
-            (1580 / 8 * self.sf, 1270 / 6 * self.sf),
-            (700 / 8 * self.sf, 1270 / 6 * self.sf),
-            (700 / 8 * self.sf, 600 / 6 * self.sf),
-            (2310 / 8 * self.sf, 600 / 6 * self.sf),
-            (2310 / 8 * self.sf, 2440 / 6 * self.sf),
-            (3720 / 8 * self.sf, 2440 / 6 * self.sf),
-            (3720 / 8 * self.sf, 1750 / 6 * self.sf),
-            (3050 / 8 * self.sf, 1750 / 6 * self.sf),
-            (3050 / 8 * self.sf, 400 / 6 * self.sf),
-            (3600 / 8 * self.sf, 400 / 6 * self.sf),
-            (3600 / 8 * self.sf, 1275 / 6 * self.sf),
-            (4500 / 8 * self.sf, 1275 / 6 * self.sf),
-        ]
+        #DO MAPY 1
+        # self.waypoints = [
+        #     (580 / 8 * self.sf, 3100 / 6 * self.sf),
+        #     (580 / 8 * self.sf, 2070 / 6 * self.sf),
+        #     (1580 / 8 * self.sf, 2070 / 6 * self.sf),
+        #     (1580 / 8 * self.sf, 1270 / 6 * self.sf),
+        #     (700 / 8 * self.sf, 1270 / 6 * self.sf),
+        #     (700 / 8 * self.sf, 600 / 6 * self.sf),
+        #     (2310 / 8 * self.sf, 600 / 6 * self.sf),
+        #     (2310 / 8 * self.sf, 2440 / 6 * self.sf),
+        #     (3720 / 8 * self.sf, 2440 / 6 * self.sf),
+        #     (3720 / 8 * self.sf, 1750 / 6 * self.sf),
+        #     (3050 / 8 * self.sf, 1750 / 6 * self.sf),
+        #     (3050 / 8 * self.sf, 400 / 6 * self.sf),
+        #     (3600 / 8 * self.sf, 400 / 6 * self.sf),
+        #     (3600 / 8 * self.sf, 1275 / 6 * self.sf),
+        #     (4500 / 8 * self.sf, 1275 / 6 * self.sf),
+        # ]
 
         """
         self.waypoints2 = []
@@ -145,27 +155,16 @@ class Game:
                 if event.type == pygame.QUIT:
                     return [False, None]
 
-                # Obsługa panelu bocznego
                 if self.side_panel.handle_event(event, self.tower_group):
-                    if (
-                        not self.waves.wave_running
-                        and not self.waves.won
-                        and not self.waves.lost
-                    ):
+                    if not self.waves.wave_running and not self.waves.won and not self.waves.lost:
                         print("Fala rozpoczęta")
                         self.start_wave()
 
-                if self.side_panel.handleTowerSelection(
-                    event, self.tower_group, checkCollisionFunction=self.checkCollision
-                ):
-                    self.selectedTower = self.side_panel.getTower()
-
-                    self.towers.insert(0, self.selectedTower)
+                if self.side_panel.handleTowerSelection(event, self.tower_group, checkCollisionFunction=self.checkCollision): 
+                    self.towers.insert(0, self.side_panel.getTower()) 
                     self.Is = 1
 
-                    self.money -= self.side_panel.getTower().cost
-                    self.side_panel.money = self.money
-                    break
+                self.bottom_panel.handle_event(event)
 
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
@@ -197,8 +196,22 @@ class Game:
                         self.tower_group.add(self.tower)
                         self.Is = 1
 
+
+                if event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:  # Prawy przycisk myszy
+
+                    for tower in self.towers:
+                        if tower.getRect().collidepoint(event.pos):  # Sprawdzenie, czy kliknięto na wieżę
+                            clicked_pos = (event.pos[0] - tower.getRect().x, event.pos[1] - tower.getRect().y)
+                            if tower.getMask().get_at(clicked_pos) == 1:
+                                print("tak")
+                                # Przekazanie obiektu wieży do funkcji upgrade innej klasy
+
+                                self.bottom_panel.clearPanel()
+                                self.bottom_panel.drawSelectedTowerInfo(tower)
+
+
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    if event.pos[0] < self.width - self.side_panel_width:
+                    if event.pos[0] < self.width - self.side_panel_width and event.pos[1] < self.height - self.bottom_panel_height: 
                         clicked = False
                         for tower in self.towers:
                             if tower.getRect().collidepoint(event.pos):
@@ -222,6 +235,8 @@ class Game:
 
                         if clicked == False:
                             self.bottom_panel.clearPanel()
+        
+                    
 
             # for tower in self.towers:
             #     print(tower.getRect())
@@ -236,7 +251,14 @@ class Game:
                     monster.kill()
                 monster.draw_health_bar(self.screen, monster.image_size)
 
+            for i in self.towers:
+                if i.generated_income:
+                    #print(i.income)
+                    self.money += i.income
+                    self.side_panel.money += i.income
+
             pygame.display.flip()
+  
 
     def draw(self):
         self.screen.blit(self.background, (0, 0))
@@ -256,11 +278,5 @@ class Game:
 
         self.waves.update()
 
-        self.side_panel.draw(
-            self.waves.wave_num,
-            self.max_waves,
-            self.waves.wave_running,
-            self.waves.won,
-            self.waves.lost,
-        )
+        self.side_panel.draw(self.waves.wave_num, self.max_waves, self.waves.wave_running, self.waves.won, self.waves.lost)
         self.bottom_panel.draw()
