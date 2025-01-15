@@ -227,6 +227,6 @@ class Game:
 
 
         self.side_panel.draw(self.waves.wave_num, self.max_waves, self.waves.wave_running, self.waves.won, self.waves.lost)
-        self.bottom_panel.draw()
+        #self.bottom_panel.draw()
 
 
