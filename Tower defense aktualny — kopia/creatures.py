@@ -50,7 +50,6 @@ class Monster(pygame.sprite.Sprite):
             self.animation_counter = 0
 
     def move_towards_next_waypoint(self):
-        """Przesuwa potwora w kierunku kolejnego punktu trasy."""
         if self.waypoint_index >= len(self.waypoints):
             return  # Potwór dotarł do końca trasy
 
@@ -132,7 +131,7 @@ class Monster(pygame.sprite.Sprite):
 
 
 class Dragon(Monster):
-    def __init__(self, position, waypoints, image_size, sf, animation_speed=3, speed=11):
+    def __init__(self, position, waypoints, image_size, sf, animation_speed=10, speed=11):
         super().__init__(name="Dragon", health=500, max_health=500, speed=speed, damage=50, reward=100, image_size=image_size, animation_speed=animation_speed,
                          image_paths=["dragon.png", "dragon1.png", "dragon2.png"], position=position, waypoints=waypoints, sf=sf)
         self.frames = [pygame.transform.flip(frame, True, False) for frame in self.frames]
@@ -144,7 +143,7 @@ class Dragon(Monster):
 
 
 class Troll(Monster):
-    def __init__(self, position, waypoints, image_size, sf, animation_speed=3, speed=3):
+    def __init__(self, position, waypoints, image_size, sf, animation_speed=10, speed=3):
         super().__init__(name="Troll", health=600, max_health=600, speed=speed, damage=30, reward=75, image_size=image_size, animation_speed=animation_speed,
                          image_paths=["troll.png", "troll1.png", "troll2.png"], position=position, waypoints=waypoints, sf=sf)
         self.health_regen = 5
@@ -156,7 +155,7 @@ class Troll(Monster):
 
 
 class Ghost(Monster):
-    def __init__(self, position, waypoints, image_size, sf, animation_speed=3, speed=3):
+    def __init__(self, position, waypoints, image_size, sf, animation_speed=10, speed=3):
         super().__init__(name="Ghost", health=600, max_health=600, speed=speed, damage=20, reward=75, image_size=image_size, animation_speed=animation_speed,
                           image_paths=["ghost.png"], position=position, waypoints=waypoints, sf=sf)
 
@@ -167,7 +166,7 @@ class Ghost(Monster):
         super().update()
 
 class Goblin(Monster):
-    def __init__(self, position, waypoints, image_size, sf, animation_speed=3, speed=3):
+    def __init__(self, position, waypoints, image_size, sf, animation_speed=10, speed=3):
         super().__init__(name="Goblin", health=600, max_health=600, speed=speed, damage=5, reward=75, image_size=image_size, animation_speed=animation_speed,
                           image_paths=["goblin.png","goblin2.png","goblin1.png"], position=position, waypoints=waypoints, sf=sf)
 
@@ -178,7 +177,7 @@ class Goblin(Monster):
         super().update()
 
 class Hydra(Monster):
-    def __init__(self, position, waypoints, image_size, sf, animation_speed=3, speed=3):
+    def __init__(self, position, waypoints, image_size, sf, animation_speed=10, speed=3):
         super().__init__(name="Hydra", health=600, max_health=600, speed=speed, damage=30, reward=75, image_size=image_size, animation_speed=animation_speed,
                           image_paths=["hydra.png","hydra1.png"], position=position, waypoints=waypoints, sf=sf)
 
@@ -190,7 +189,7 @@ class Hydra(Monster):
 
 
 class Skeleton(Monster):
-    def __init__(self, position, waypoints, image_size, sf, animation_speed=3, speed=3):
+    def __init__(self, position, waypoints, image_size, sf, animation_speed=10, speed=3):
         super().__init__(name="Skeleton", health=600, max_health=600, speed=speed, damage=10, reward=75, image_size=image_size, animation_speed=animation_speed,
                           image_paths=["skeleton.png","skeleton1.png","skeleton2.png"], position=position, waypoints=waypoints, sf=sf)
 
@@ -202,7 +201,7 @@ class Skeleton(Monster):
 
 
 class Thief(Monster):
-    def __init__(self, position, waypoints, image_size, sf, animation_speed=3, speed=3):
+    def __init__(self, position, waypoints, image_size, sf, animation_speed=10, speed=3):
         super().__init__(name="Thief", health=600, max_health=600, speed=speed, damage=20, reward=75, image_size=image_size, animation_speed=animation_speed,
                           image_paths=["thief2.png","thief1.png","thief.png"], position=position, waypoints=waypoints, sf=sf)
 

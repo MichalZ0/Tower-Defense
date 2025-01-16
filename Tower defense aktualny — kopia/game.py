@@ -29,7 +29,7 @@ class Game:
         self.width, self.height = self.screen.get_width(), self.screen.get_height()
         self.bgPath = os.path.join(os.getcwd(), 'assets', 'background.png')
         self.background = pygame.image.load(self.bgPath)
-        self.background = pygame.image.load('assets/map/map_cave.png')
+        self.background = pygame.image.load('assets/map/map_desert.png')
         self.windmill = pygame.transform.scale(pygame.image.load("assets/map/blacksmith.png"), (250*sf, 250*sf))
         self.windmill = pygame.transform.flip(self.windmill, True, False)
         self.heart = pygame.transform.scale(pygame.image.load("assets/miscelanneous/heart.png"), (350, 350))
@@ -157,29 +157,19 @@ class Game:
                         for tower in self.towers:
                             if tower.getRect().collidepoint(event.pos): 
                                 self.clickPos = (event.pos[0] - tower.getRect().x,  event.pos[1] - tower.getRect().y)
-                                try:
-                                    if (tower.getMask().get_at(self.clickPos) == 1 and clicked == False ):
-                                        tower.showRadius()
-                                        self.bottom_panel.drawSelectedTowerInfo(tower)
-                                        clicked = True
-
-                                    else:
-                                        tower.hideRadius()
-                                        self.bottom_panel.clearPanel()
-
-                                except Exception as e:
-                                    print("błąd")
-
-
-                                #else:
-                                 #   tower.hideRadius()
-                                  #  self.bottom_panel.clearPanel()
+                                if (tower.getMask().get_at(self.clickPos) == 1 and clicked == False ):  
+                                    tower.showRadius()
+                                    # self.bottom_panel.drawSelectedTowerInfo(tower)
+                                    clicked = True 
+                                else:
+                                    tower.hideRadius()
+                                    # self.bottom_panel.clearPanel()
 
                             else:
                                 tower.hideRadius()
 
-                            if (clicked == False):
-                                self.bottom_panel.clearPanel()
+                        # if (clicked == False):
+                        #     self.bottom_panel.clearPanel()
 
 
             self.draw()

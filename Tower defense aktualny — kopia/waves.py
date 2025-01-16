@@ -14,9 +14,18 @@ class Waves:
         self.wave_running = False
         self.won = False
         self.lost = False
-        self.map_base_spawn_point = (670/8, 170/6) #dla mapy 3
+        self.map_base_spawn_point = (-250 / 8, 3100 / 6)  # dla mapy 1
+        self.map_base_spawn_point = (2150 / 8, 4100 / 6)  # dla mapy 2
+        #self.map_base_spawn_point = (670/8, 170/6) #dla mapy 3
+        #WSPOLCZYNNIKI DLA MAPY CAVE ABY POTWORY SIE SPAWNOWALY W DOBRYM MIEJSCU
         self.map_start_coefficient_x = -math.sqrt(2)
-        self.map_start_coefficient_y = -math.sqrt(2) #tymczasowo (), bedzie zalezne od mapy zeby potwory sie spawnowaly bardziej w dol/gore/lewo/raczej nie prawo
+        self.map_start_coefficient_y = -math.sqrt(2)
+        #WSPLCZYNNIKI ALE DLA MAPY DESERT
+        self.map_start_coefficient_x = 0
+        self.map_start_coefficient_y = 2
+        #WPOSLCZYNNIKI DLA MAPY ZIELONEJ
+        #self.map_start_coefficient_x = -2
+        #self.map_start_coefficient_y = 0
         #DO MAPY 1
         self.waypoints = [(580/8*self.sf, 3100/6*self.sf), (580/8*self.sf, 2070/6*self.sf),
                           (1580/8*self.sf, 2070/6*self.sf), (1580/8*self.sf, 1270/6*self.sf),
@@ -55,6 +64,7 @@ class Waves:
                           (350 / 8 * self.sf, 1695 / 6 * self.sf)
                           ]
         # DO MAPY 3
+        '''
         self.waypoints = [(920 / 8 * self.sf, 420 / 6 * self.sf), (1235 / 8 * self.sf, 660 / 6 * self.sf),
                           (605 / 8 * self.sf, 1080 / 6 * self.sf), (605 / 8 * self.sf, 1280 / 6 * self.sf),
                           (1050 / 8 * self.sf, 1630 / 6 * self.sf), (700 / 8 * self.sf, 2190 / 6 * self.sf),
@@ -73,22 +83,7 @@ class Waves:
                           (4320 / 8 * self.sf, 1270 / 6 * self.sf), (4220 / 8 * self.sf, 1070 / 6 * self.sf),
                           (3620 / 8 * self.sf, 730 / 6 * self.sf),
                           (3300 / 8 * self.sf, 370 / 6 * self.sf), (3300 / 8 * self.sf, 170 / 6 * self.sf), (3520 / 8 * self.sf, 0 / 6 * self.sf)]
-
-        self.Troll = Troll((-250 / 8 * self.sf, 3100 / 6 * self.sf), self.waypoints,
-              (64 * self.sf, 50 * self.sf), self.sf)
-        self.Dragon = Dragon((-250 / 8 * self.sf, 3100 / 6 * self.sf), self.waypoints,
-                        (64 * self.sf, 50 * self.sf), self.sf)
-        self.Ghost = Ghost((-250 / 8 * self.sf, 3100 / 6 * self.sf),self.waypoints,
-                      (64 * self.sf, 50 * self.sf), self.sf)
-        self.Goblin = Goblin((-250 / 8 * self.sf, 3100 / 6 * self.sf), self.waypoints,
-                        (44 * self.sf, 40 * self.sf), self.sf)
-        self.Hydra = Hydra((-250 / 8 * self.sf, 3100 / 6 * self.sf),self.waypoints,
-                      (64 * self.sf, 50 * self.sf), self.sf)
-        self.Skeleton = Skeleton((-250 / 8 * self.sf, 3100 / 6 * self.sf),self.waypoints,
-                            (64 * self.sf, 50 * self.sf), self.sf)
-        self.Thief = Thief((-250 / 8 * self.sf, 3100 / 6 * self.sf),self.waypoints,
-                      (64 * self.sf, 50 * self.sf), self.sf)
-
+'''
         self.monsters = pygame.sprite.Group()
 
     def create_wave(self):
