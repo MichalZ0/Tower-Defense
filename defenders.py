@@ -8,22 +8,21 @@ from Attack import *
 from Components.BottomPanel import *
 
 class Cannon(pygame.sprite.Sprite):
-    def __init__(self, position, image_path, range, damage,animation_speed, name='', updateSidePanel=None, cost=100):
+    def __init__(self, position, image_path, range, damage,animation_speed, name='', updateSidePanel=None):
         super().__init__()
-        self.name = name
-        self.damage = damage
-        self.position = position
-        self.cost = cost
+        self.name = "Cannon"
+        self.damage = 100
+        self.image_path=image_path
+        self.position=position
         self.range = range
-
         self.framesPath = os.path.join(image_path, 'Cannon')
+
         self.frames = [pygame.image.load(os.path.join(self.framesPath, 'Cannon0.png')).convert_alpha(),
                        pygame.image.load(os.path.join(self.framesPath, 'Cannon1.png')).convert_alpha(),
                        pygame.image.load(os.path.join(self.framesPath, 'Cannon2.png')).convert_alpha(),
                        pygame.image.load(os.path.join(self.framesPath, 'Cannon3.png')).convert_alpha(),
                        pygame.image.load(os.path.join(self.framesPath, 'Cannon4.png')).convert_alpha()
                        ]
-
 
         self.framesOffset = [[0,0], 
                              [0,-(self.frames[1].get_rect().height - self.frames[0].get_rect().height)],
@@ -33,8 +32,6 @@ class Cannon(pygame.sprite.Sprite):
 
 
 
-        self.towerInRadiusBlitPos =  [self.range - (self.frames[0].get_width()/2), 
-                                      self.range - (self.frames[0].get_height()/2)] 
 
 
 
@@ -42,40 +39,40 @@ class Cannon(pygame.sprite.Sprite):
         self.animation_speed = animation_speed
         self.animation_counter = 0
 
+        self.towerInRadiusBlitPos =  [self.range - (self.frames[0].get_width()/2), 
+                                      self.range - (self.frames[0].get_height()/2)] 
+
+
         self.image = self.frames[self.current_frame]
 
         self.imageCopy = self.image.copy()
 
-        self.rect = self.image.get_rect(center=position)
+        self.rect = self.image.get_rect(center=self.position)
+        self.rectWithoutRadius = self.image.get_rect(center=self.position)
         self.animationRect = self.rect.copy()
 
         self.anim_x = self.rect.x
         self.anim_y = self.rect.y
 
 
-        self.selectedTowerRect = self.rect.copy()
+
+        self.typ_obrażeń="Podstawowy"
+
+
         self.damage = damage
-
-
-
-
+        self.income=0
+        self.generated_income = False
 
         self.shouldShowRadius = False
         self.last_attack_time = 0  # Czas ostatniego ataku (w milisekundach)
         self.attack_interval = 2000
-        self.animate_interwal = 1000
+        self.animate_interwal = 200
         self.last_animate_time=0
 
         self.updateBottomPanel = updateSidePanel
 
+        self.radiusColor = 'white'
         self.bullets = []
-         
-        self.radiusColor = 'white' 
-
-
-        self.income=0
-        self.generated_income = False
-
         self.level=0
 
     def is_in_range(self, monster):
@@ -86,17 +83,21 @@ class Cannon(pygame.sprite.Sprite):
         )
         return distance <= self.range
 
-    def attack(self, monster):
-        monster.take_damage(self.damage)
+    def attack(self, monster,money):
+        monster.take_damage(self.damage,self.typ_obrażeń)
         self.last_attack_time = pygame.time.get_ticks()
 
-    def update(self, monsters):
+    def update(self, monsters,money):
+
         self.target = None
         current_time = pygame.time.get_ticks()
 
         if current_time - self.last_attack_time < self.attack_interval:
             self.animate()
             return
+
+        # Resetowanie celu
+
 
         # Znajdowanie najbliższego potwora w zasięgu
         for monster in monsters:
@@ -107,12 +108,10 @@ class Cannon(pygame.sprite.Sprite):
 
         # Atak, jeśli znaleziono cel
         if self.target:
+
             self.bullets.append(Attack(self.target.rect, self.rect, 30))
-            self.attack(self.target)  # Wywołuje atak, ustawia czas ostatniego ataku
+            self.attack(self.target,money)  # Wywołuje atak, ustawia czas ostatniego ataku
             print(self.target.name)
-
-
-
 
 
     def getRect(self):
@@ -136,10 +135,14 @@ class Cannon(pygame.sprite.Sprite):
                                                 self.towerInRadiusBlitPos[1] + self.framesOffset[self.current_frame][1]))
         
         self.image = self.towerRadiusSprite
-
+        # print(self.position)
         self.rect = self.image.get_rect(center=self.position)
         
         self.shouldShowRadius = True
+
+
+
+
 
     def getMask(self):
         return pygame.mask.from_surface(self.image)
@@ -149,17 +152,22 @@ class Cannon(pygame.sprite.Sprite):
         self.rect.x = self.anim_x + self.framesOffset[self.current_frame][0]
         self.rect.y = self.anim_y + self.framesOffset[self.current_frame][1]
                                                 
-
         self.shouldShowRadius = False
+
+    def getFirstFrame(self):
+        return self.frames[0]
 
     def setPosition(self, newPosition):
         self.position = newPosition
         self.rect = self.image.get_rect(center=newPosition)
+        self.rectWithoutRadius = self.rect.copy()
         self.animationRect = self.image.get_rect(center=newPosition).copy()
 
         self.anim_x = self.rect.x
         self.anim_y = self.rect.y
+
         
+
     def animate(self):
         current_time = pygame.time.get_ticks()
 
@@ -178,7 +186,7 @@ class Cannon(pygame.sprite.Sprite):
             
         if (self.shouldShowRadius == True):
             self.showRadius()
-        
+
     def getBullets(self):
         return self.bullets
 
@@ -214,6 +222,13 @@ class Cannon(pygame.sprite.Sprite):
             self.towerInRadiusBlitPos =  [self.range - (self.frames[0].get_width()/2), 
                                           self.range - (self.frames[0].get_height()/2)] 
             self.level=1
+            print(
+            self.current_frame,
+            self.animation_speed,
+            self.animation_counter
+            )
+
+
 
 class MageTower(Cannon):
     def __init__(self, position, image_path, range, damage, animation_speed,updateSidePanel=None):
@@ -221,7 +236,7 @@ class MageTower(Cannon):
         super().__init__(position, image_path, range, damage, animation_speed,updateSidePanel=None)
 
             # Zmiana ścieżki do animacji (na animację wieży maga)
-        self.rect.center = (16, 16)
+        #self.rect.center = (16, 16)
         self.name="MageTower"
         self.level=0
         self.level2=0
@@ -381,7 +396,7 @@ class Archer(Cannon):
         if self.level == 0:
             self.damage+=100
             self.range+=100
-            self.framesPath = os.path.join(self.image_path, 'Archer1')
+            self.framesPath = os.path.join(self.image_path, 'Archer3')
             self.frames = [pygame.image.load(os.path.join(self.framesPath, 'Archer0.png')).convert_alpha(),
                            pygame.image.load(os.path.join(self.framesPath, 'Archer1.png')).convert_alpha(),
                            pygame.image.load(os.path.join(self.framesPath, 'Archer2.png')).convert_alpha(),

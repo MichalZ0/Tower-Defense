@@ -14,10 +14,12 @@ class SidePanel:
         health: int,
         money: int,
         width_size=150,
+        bottom_panel_height=130,
         game_size=(0, 0),
     ):
         self.game_size = game_size
         self.width_size = width_size
+        self.bottom_panel_height = bottom_panel_height
         self.screen = screen
         self.width = width
         self.height = height
@@ -76,17 +78,88 @@ class SidePanel:
 
         for i in range(0, int(self.towerCount / self.towerColumnCount)):
             for j in range(0, self.towerColumnCount):
-                self.item = Button(
-                    self.towerPanel,
-                    self.itemSize,
-                    (
-                        j * self.itemSize[0] + ((j + 1) * self.itemGap),
-                        i * self.itemSize[1] + ((i + 1) * self.itemGap),
-                    ),
-                    "green",
-                    "Cannon",
-                    image_path=os.path.join(self.itemPath, "Cannon", "Cannon0.png"),
-                )
+                if i == 0 and j == 0:  # Przykład warunku dla SniperTower
+                    self.item = Button(
+                        self.towerPanel,
+                        self.itemSize,
+                        (
+                            j * self.itemSize[0] + ((j + 1) * self.itemGap),
+                            i * self.itemSize[1] + ((i + 1) * self.itemGap),
+                        ),
+                        "green",
+                        "MageTower",  # Nazwa nowej wieży
+                        image_path=os.path.join(
+                            self.itemPath, "MageTower", "MageTower0.png"
+                        ),
+                    )
+                if i == 0 and j == 1:  # Przykład warunku dla SniperTower
+                    self.item = Button(
+                        self.towerPanel,
+                        self.itemSize,
+                        (
+                            j * self.itemSize[0] + ((j + 1) * self.itemGap),
+                            i * self.itemSize[1] + ((i + 1) * self.itemGap),
+                        ),
+                        "green",
+                        "Archer",  # Nazwa nowej wieży
+                        image_path=os.path.join(self.itemPath, "Archer", "Archer0.png"),
+                    )
+
+                if i == 0 and j == 2:  # Przykład warunku dla SniperTower
+                    self.item = Button(
+                        self.towerPanel,
+                        self.itemSize,
+                        (
+                            j * self.itemSize[0] + ((j + 1) * self.itemGap),
+                            i * self.itemSize[1] + ((i + 1) * self.itemGap),
+                        ),
+                        "green",
+                        "WithHut",  # Nazwa nowej wieży
+                        image_path=os.path.join(
+                            self.itemPath, "Witchhouse", "Witchhouse0.png"
+                        ),
+                    )
+
+                if i == 1 and j == 0:  # Przykład warunku dla SniperTower
+                    self.item = Button(
+                        self.towerPanel,
+                        self.itemSize,
+                        (
+                            j * self.itemSize[0] + ((j + 1) * self.itemGap),
+                            i * self.itemSize[1] + ((i + 1) * self.itemGap),
+                        ),
+                        "green",
+                        "Temple",  # Nazwa nowej wieży
+                        image_path=os.path.join(self.itemPath, "Temple", "Temple0.png"),
+                    )
+
+                if i == 1 and j == 1:
+                    self.item = Button(
+                        self.towerPanel,
+                        self.itemSize,
+                        (
+                            j * self.itemSize[0] + ((j + 1) * self.itemGap),
+                            i * self.itemSize[1] + ((i + 1) * self.itemGap),
+                        ),
+                        "green",
+                        "Cannon",  # Domyślna wieża
+                        image_path=os.path.join(self.itemPath, "Cannon", "Cannon0.png"),
+                    )
+
+                if i == 1 and j == 2:
+                    self.item = Button(
+                        self.towerPanel,
+                        self.itemSize,
+                        (
+                            j * self.itemSize[0] + ((j + 1) * self.itemGap),
+                            i * self.itemSize[1] + ((i + 1) * self.itemGap),
+                        ),
+                        "green",
+                        "Factory",  # Domyślna wieża
+                        image_path=os.path.join(
+                            self.itemPath, "Factory", "Factory0.png"
+                        ),
+                    )
 
                 self.item.onClick(self.placeItem)
                 self.towerButtons.append(self.item)
@@ -169,7 +242,7 @@ class SidePanel:
                 self.button_pressed = False
             return False
 
-    def handleTowerSelection(self, event, sprites, checkCollisionFunction):
+    def handleTowerSelection(self, event, sprites, checkCollisionFunction, updateBottomPanel):
         towerMap = {
             "Cannon": Cannon,
             "Temple": Cannon,
@@ -201,6 +274,7 @@ class SidePanel:
                             1,
                             towerButton.getText(),
                         )
+                        updateBottomPanel(self.newTower)
                         break
 
         if (
@@ -209,65 +283,48 @@ class SidePanel:
             and self.newTower != None
         ):
 
-            if (
-                event.pos[0] > 0
-                and event.pos[0] <= self.width - self.width_size - 1
-                and event.pos[0] > self.newTower.frames[0].get_rect().width / 2
-                and event.pos[1]
-                < self.game_size[1] - self.newTower.frames[0].get_rect().height / 2
-                and event.pos[1] > self.newTower.frames[0].get_rect().height / 2
-            ):
-
-                if checkCollisionFunction(event.pos):
-                    self.newTower.radiusColor = "white"
-                else:
-                    self.newTower.radiusColor = "red"
-
+            if event.pos[0] < self.game_size[0]:
                 sprites.add(self.newTower)
 
-                self.drawTowerPosition = [event.pos[0], event.pos[1]]
-                self.newTower.setPosition(self.drawTowerPosition)
+                if event.pos[0] > self.newTower.imageCopy.get_rect().width / 2:
+                    self.drawTowerPosition[0] = event.pos[0]
 
+                if event.pos[1] < self.height - self.bottom_panel_height:
+                    self.drawTowerPosition[1] = event.pos[1]
+                
+                self.newTower.setPosition(self.drawTowerPosition)
                 self.newTower.showRadius()
+
+                if checkCollisionFunction(event.pos):
+                   self.newTower.radiusColor = 'white' 
+                else:
+                    self.newTower.radiusColor = 'red'
+
 
             elif event.pos[0] > self.towerPanelRect.x:
                 sprites.remove(self.newTower)
+                # usuwa sprite ale chyba nie cala wieze!!
 
         if (
             event.type == pygame.MOUSEBUTTONUP
             and self.towerClicked == True
             and self.newTower != None
         ):
+
+            if self.newTower.radiusColor == 'red': 
+                sprites.remove(self.newTower)
+                self.newTower = None 
+                return False
+
+
             self.towerClicked = False
             self.newTower.hideRadius()
+            self.newTower.setPosition(self.drawTowerPosition)
+            self.drawTowerPosition = [101, 101]
 
-            if event.pos[0] < self.newTower.frames[0].get_rect().width / 2:
-                self.newTower.setPosition(
-                    (self.newTower.frames[0].get_rect().width / 2, event.pos[1])
-                )
 
-            elif (
-                event.pos[1]
-                > self.game_size[1] - self.newTower.frames[0].get_rect().height / 2
-            ):
-                self.newTower.setPosition(
-                    (
-                        event.pos[0],
-                        self.game_size[1]
-                        - self.newTower.frames[0].get_rect().height / 2,
-                    )
-                )
 
-            elif event.pos[1] < self.newTower.frames[0].get_rect().height / 2:
-                self.newTower.setPosition(
-                    (event.pos[0], self.newTower.frames[0].get_rect().height / 2)
-                )
 
-            else:
-                self.newTower.setPosition(event.pos)
-
-            if self.newTower.radiusColor == "red":
-                sprites.remove(self.newTower)
 
             return True
 

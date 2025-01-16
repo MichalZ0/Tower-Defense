@@ -16,13 +16,9 @@ class Game:
             self.max_waves = 50
             self.money = 1000
         elif difficulty == "challenging":
-            self.health = 100 
-            self.max_waves = 60 
-            self.money = 750 
+            pass
         elif difficulty == "nightmare":
-            self.health = 50 
-            self.max_waves = 75 
-            self.money = 500 
+            pass
         self.side_panel_width = 150
         self.bottom_panel_height = 130
 
@@ -34,6 +30,7 @@ class Game:
             health=self.health,
             money=self.money,
             width_size=self.side_panel_width,
+            bottom_panel_height=self.bottom_panel_height,
             game_size=(
                 screen.get_width() - self.side_panel_width,
                 screen.get_height() - self.bottom_panel_height,
@@ -48,10 +45,9 @@ class Game:
 
         self.screen = screen
         self.width, self.height = self.screen.get_width(), self.screen.get_height()
-        print("w, h", self.width, self.height)
         self.bgPath = os.path.join(os.getcwd(), "assets", "background.png")
-        # self.background = pygame.image.load(self.bgPath)
-        self.background = pygame.image.load('assets/map/map_cave.png')
+        self.background = pygame.image.load(self.bgPath)
+        self.background = pygame.image.load("assets/map/map_desert.png")
         self.windmill = pygame.transform.scale(
             pygame.image.load("assets/map/blacksmith.png"), (250 * sf, 250 * sf)
         )
@@ -63,39 +59,15 @@ class Game:
         print("Sf", self.sf)
         self.background = pygame.transform.scale(
             self.background,
-            (
-                (self.width - self.side_panel_width) * self.sf,
-                (self.height - self.bottom_panel_height) * self.sf,
-            ),
+            (800 * self.sf - self.side_panel.width_size * sf, 600 * self.sf),
         )
-
-        self.background.blit(self.windmill, (-10 * self.sf, -150 * self.sf))
-
-        print('rozmiar mapy', self.background.get_size())
-
         # Inicjalizacja grupy potworów
         self.monsters = pygame.sprite.Group()
         self.current_wave = 1
         self.waves = Waves(self.sf, self.screen)
 
-        #DO MAPY 1
-        # self.waypoints = [
-        #     (580 / 8 * self.sf, 3100 / 6 * self.sf),
-        #     (580 / 8 * self.sf, 2070 / 6 * self.sf),
-        #     (1580 / 8 * self.sf, 2070 / 6 * self.sf),
-        #     (1580 / 8 * self.sf, 1270 / 6 * self.sf),
-        #     (700 / 8 * self.sf, 1270 / 6 * self.sf),
-        #     (700 / 8 * self.sf, 600 / 6 * self.sf),
-        #     (2310 / 8 * self.sf, 600 / 6 * self.sf),
-        #     (2310 / 8 * self.sf, 2440 / 6 * self.sf),
-        #     (3720 / 8 * self.sf, 2440 / 6 * self.sf),
-        #     (3720 / 8 * self.sf, 1750 / 6 * self.sf),
-        #     (3050 / 8 * self.sf, 1750 / 6 * self.sf),
-        #     (3050 / 8 * self.sf, 400 / 6 * self.sf),
-        #     (3600 / 8 * self.sf, 400 / 6 * self.sf),
-        #     (3600 / 8 * self.sf, 1275 / 6 * self.sf),
-        #     (4500 / 8 * self.sf, 1275 / 6 * self.sf),
-        # ]
+        # DO MAPY 1
+        # self.waypoints = [(580/8*self.sf, 3100/6*self.sf), (580/8*self.sf, 2070/6*self.sf), (1580/8*self.sf, 2070/6*self.sf), (1580/8*self.sf, 1270/6*self.sf), (700/8*self.sf, 1270/6*self.sf), (700/8*self.sf, 600/6*self.sf), (2310/8*self.sf, 600/6*self.sf), (2310/8*self.sf, 2440/6*self.sf), (3720/8*self.sf, 2440/6*self.sf), (3720/8*self.sf, 1750/6*self.sf), (3050/8*self.sf, 1750/6*self.sf), (3050/8*self.sf, 400/6*self.sf), (3600/8*self.sf, 400/6*self.sf), (3600/8*self.sf, 1275/6*self.sf), (4500/8*self.sf, 1275/6*self.sf)]
 
         """
         self.waypoints2 = []
@@ -117,9 +89,9 @@ class Game:
         self.waves.create_wave()
         self.monsters = self.waves.getMonsters()
 
-    def checkCollision(self, event):
+    def get_color_at_mouse_click(self, event):
         mouse_x, mouse_y = event
-        print(mouse_x, mouse_y)
+        print('ev in collision', mouse_x, mouse_y)
 
         # Sprawdzanie koloru piksela w tym miejscu
         color = self.background.get_at((mouse_x, mouse_y))
@@ -127,13 +99,14 @@ class Game:
         R, G, B, A = color  # Przypisanie wartości składowych koloru
         brightness = 0.2126 * R + 0.7152 * G + 0.0722 * B  # Obliczanie jasności
 
-        # Jeśli jasność jest powyżej pewnego progu (np. 128), uznajemy kolor za jasny
-        print(brightness)
 
         for t in self.towers:
-            if t.rect.collidepoint(mouse_x, mouse_y):
+            if (t.rectWithoutRadius.collidepoint(event)):
                 return False
 
+
+        # Jeśli jasność jest powyżej pewnego progu (np. 128), uznajemy kolor za jasny
+        print(brightness)
         return brightness > 128
 
     def take_damage(self, damage):
@@ -151,20 +124,31 @@ class Game:
         self.Is = 0
         running = True
         while running:
+            # print(self.towers)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     return [False, None]
 
+                # Obsługa panelu bocznego
                 if self.side_panel.handle_event(event, self.tower_group):
-                    if not self.waves.wave_running and not self.waves.won and not self.waves.lost:
+                    if (
+                        not self.waves.wave_running
+                        and not self.waves.won
+                        and not self.waves.lost
+                    ):
                         print("Fala rozpoczęta")
                         self.start_wave()
 
-                if self.side_panel.handleTowerSelection(event, self.tower_group, checkCollisionFunction=self.checkCollision): 
-                    self.towers.insert(0, self.side_panel.getTower()) 
-                    self.Is = 1
+                if self.side_panel.handleTowerSelection(
+                    event,
+                    self.tower_group,
+                    self.get_color_at_mouse_click,
+                    self.bottom_panel.drawSelectedTowerInfo
+                ):
 
-                self.bottom_panel.handle_event(event)
+                    self.towers.insert(0, self.side_panel.getTower())
+                    self.Is = 1
+                    self.bottom_panel.clearPanel()
 
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
@@ -178,51 +162,46 @@ class Game:
                     self.tower = Cannon(
                         position=mouse_position,
                         image_path=self.tower_image_path,
-                        range=200,
+                        range=100,
                         damage=100,
                         animation_speed=100,
                         name="Cannon",
                         updateSidePanel=self.bottom_panel.drawSelectedTowerInfo,
                     )
-                    self.money -= self.tower.cost
-                    self.side_panel.money = self.money
-
                     if len(self.towers) == 1:
                         self.towers[0].hideRadius()
 
                     self.towers.insert(0, self.tower)
 
-                    if self.checkCollision(mouse_position):
+                    if self.get_color_at_mouse_click(mouse_position):
                         self.tower_group.add(self.tower)
                         self.Is = 1
 
+                        #??????????????????????????????
+                # if event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:  # Prawy przycisk myszy
+                #
+                #     for tower in self.towers:
+                #         if tower.getRect().collidepoint(event.pos):  # Sprawdzenie, czy kliknięto na wieżę
+                #             clicked_pos = (event.pos[0] - tower.getRect().x, event.pos[1] - tower.getRect().y)
+                #             if tower.getMask().get_at(clicked_pos) == 1:
+                #                 print("tak")
+                #                 # Przekazanie obiektu wieży do funkcji upgrade innej klasy
+                #
+                #                 self.bottom_panel.clearPanel()
+                #                 self.bottom_panel.drawSelectedTowerInfo(tower)
 
-                if event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:  # Prawy przycisk myszy
-
-                    for tower in self.towers:
-                        if tower.getRect().collidepoint(event.pos):  # Sprawdzenie, czy kliknięto na wieżę
-                            clicked_pos = (event.pos[0] - tower.getRect().x, event.pos[1] - tower.getRect().y)
-                            if tower.getMask().get_at(clicked_pos) == 1:
-                                print("tak")
-                                # Przekazanie obiektu wieży do funkcji upgrade innej klasy
-
-                                self.bottom_panel.clearPanel()
-                                self.bottom_panel.drawSelectedTowerInfo(tower)
-
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if event.button == 1:  # Lewy przycisk myszy (kliknięcie na przyciski ulepszeń)
+                        mouse_pos = pygame.mouse.get_pos()
+                        self.bottom_panel.handle_event(event,mouse_pos)
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if event.pos[0] < self.width - self.side_panel_width and event.pos[1] < self.height - self.bottom_panel_height: 
                         clicked = False
                         for tower in self.towers:
-                            if tower.getRect().collidepoint(event.pos):
-                                self.clickPos = (
-                                    event.pos[0] - tower.getRect().x,
-                                    event.pos[1] - tower.getRect().y,
-                                )
-                                if (
-                                    tower.getMask().get_at(self.clickPos) == 1
-                                    and clicked == False
-                                ):
+                            if tower.rectWithoutRadius.collidepoint(event.pos):
+                                self.clickPos = ( event.pos[0] - tower.getRect().x, event.pos[1] - tower.getRect().y,)
+                                if ( tower.getMask().get_at(self.clickPos) == 1 and clicked == False):
                                     tower.showRadius()
                                     self.bottom_panel.drawSelectedTowerInfo(tower)
                                     clicked = True
@@ -235,11 +214,6 @@ class Game:
 
                         if clicked == False:
                             self.bottom_panel.clearPanel()
-        
-                    
-
-            # for tower in self.towers:
-            #     print(tower.getRect())
 
             self.draw()
 
@@ -253,21 +227,23 @@ class Game:
 
             for i in self.towers:
                 if i.generated_income:
-                    #print(i.income)
+                    # print(i.income)
                     self.money += i.income
                     self.side_panel.money += i.income
 
             pygame.display.flip()
-  
 
     def draw(self):
+
         self.screen.blit(self.background, (0, 0))
         self.tower_group.draw(self.screen)
+        # Rysowanie linii łączących waypoints
+        # self.screen.blit(self.windmill, (-10 * self.sf, -150 * self.sf))
         self.monsters.update()  # Aktualizuje wszystkie potwory w grupie
 
         if self.Is == 1:
             for tower in self.towers:
-                tower.update(self.monsters)
+                tower.update(self.monsters, self.money)
 
                 bullets = tower.getBullets()
                 for i in range(0, len(bullets)):
@@ -278,5 +254,11 @@ class Game:
 
         self.waves.update()
 
-        self.side_panel.draw(self.waves.wave_num, self.max_waves, self.waves.wave_running, self.waves.won, self.waves.lost)
+        self.side_panel.draw(
+            self.waves.wave_num,
+            self.max_waves,
+            self.waves.wave_running,
+            self.waves.won,
+            self.waves.lost,
+        )
         self.bottom_panel.draw()

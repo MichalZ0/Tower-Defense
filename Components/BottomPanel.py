@@ -9,10 +9,7 @@ class BottomPanel():
     def __init__(self, screen, sf, width, height):
         self.screen = screen
         self.sf = sf
-
-        self.Is=0
-        self.Is2=0
-
+        self.Tower=None
         self.screenSize = (self.screen.get_width(), self.screen.get_height())
         self.panelRect = pygame.Rect(0,
                                      self.screenSize[1] - height, 
@@ -22,7 +19,8 @@ class BottomPanel():
 
         self.panelBg = pygame.image.load(os.path.join(os.getcwd(), "wood_texture.jpeg"))
         self.panelBg = pygame.transform.scale(self.panelBg, (self.screenSize[0] - width, self.screenSize[0] - width))
-
+        self.Is=0
+        self.Is2=0
         self.clearPanelSurface = pygame.Surface((self.panelRect.width, self.panelRect.height))
 
         i = 1
@@ -44,6 +42,8 @@ class BottomPanel():
 
 
     def drawSelectedTowerInfo(self, tower):
+        self.Is2=0
+        print(tower.name)
         self.towerName = Text(self.currentSurface, (0,0), tower.name, size=42)
         self.towerName.draw()
 
@@ -77,7 +77,8 @@ class BottomPanel():
         if tower.name == "Cannon":
             self.upgrade1 = upgradeButton(self.currentSurface, (120, 100), (self.attackSpeed.getPosition()[0] + self.attackSpeed.getSize()[0] + 40,
                                 self.panelRect.height/2 - 100/2),
-                                "blue", text='', upgradeTitle=self.firstUpgradeName, image_path=os.path.join(os.getcwd(), 'assets', 'towers','Cannon', 'Cannon0.png'), upgradeCost='100', upgradedTower=tower)
+                                "blue", text='', upgradeTitle=self.firstUpgradeName, image_path=os.path.join(os.getcwd(), 'assets', 'towers','Mortar', 'Mortar0.png'), upgradeCost='100', upgradedTower=tower)
+        #
             self.upgrade2 = upgradeButton(self.currentSurface, (120, 100), (self.upgrade1.getPosition()[0] + self.upgrade1.getSize()[0] + 30,
                                                                         self.upgrade1.getPosition()[1]),"green", text='', upgradeTitle=self.secondUpgradeName, image_path=os.path.join(os.getcwd(), 'assets', 'upgrades', 'upgrade1.png'), upgradeCost='300')
 
@@ -148,6 +149,9 @@ class BottomPanel():
                                           "blue", text='', upgradeTitle=self.firstUpgradeName,
                                           image_path=os.path.join(os.getcwd(), 'assets', 'towers', 'Witchhouse3',
                                                                   'Witchhouse0.png'), upgradeCost='100')
+            self.Is = 1
+            self.Tower = tower
+            self.upgrade1.draw()
 
         if tower.name == "Factory":
                 # print("przycisk")
@@ -169,10 +173,31 @@ class BottomPanel():
 
 
     def clearPanel(self): 
+        self.Tower=None
         self.currentSurface.blit(self.clearPanelSurface, (0,0))
 
+    # def handle_event(self,event,mouse_pos):
+        # """Obsługuje kliknięcia na przyciskach w panelu, w tym ulepszanie wieży."""
+        # if self.Is:
+        #     if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:  # Sprawdzamy, czy kliknięto lewym przyciskiem myszy
+        #         #print("rect",self.upgrade1.getRect())
+        #         #print("pozycja",self.upgrade1.position)
+        #         if self.upgrade1.clicked(event):
+        #             print('dziala')
+        #
+        #             self.Tower.upgrade()
+        #
+        #             self.clearPanel()
+        #         if self.Is2==1:
+        #             if self.upgrade2.clicked(event):
+        #                 self.Tower.upgrade2()
+        #
+        #                 self.Tower.upgrade()
+        #                 self.clearPanel()
 
-    def handle_event(self,event):
+
+
+    def handle_event(self,event, mouse_pos):
         """Obsługuje kliknięcia na przyciskach w panelu, w tym ulepszanie wieży."""
         if (event.type == pygame.MOUSEBUTTONDOWN and event.pos[1] > self.panelRect.y): 
             if self.Is:
@@ -185,6 +210,6 @@ class BottomPanel():
 
 
 
-        
+
 
         
