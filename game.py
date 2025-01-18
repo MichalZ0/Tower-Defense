@@ -199,6 +199,8 @@ class Game:
                     if event.pos[0] < self.width - self.side_panel_width and event.pos[1] < self.height - self.bottom_panel_height: 
                         clicked = False
                         for tower in self.towers:
+                            print('rect with radius', tower.rect)
+                            print('rect without radius', tower.anim_x, tower.anim_y)
                             if tower.rectWithoutRadius.collidepoint(event.pos):
                                 self.clickPos = ( event.pos[0] - tower.getRect().x, event.pos[1] - tower.getRect().y,)
                                 if ( tower.getMask().get_at(self.clickPos) == 1 and clicked == False):

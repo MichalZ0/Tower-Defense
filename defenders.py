@@ -134,8 +134,9 @@ class Cannon(pygame.sprite.Sprite):
         self.towerRadiusSprite.blit(self.frames[self.current_frame], (self.towerInRadiusBlitPos[0] + self.framesOffset[self.current_frame][0], 
                                                 self.towerInRadiusBlitPos[1] + self.framesOffset[self.current_frame][1]))
         
+
+
         self.image = self.towerRadiusSprite
-        # print(self.position)
         self.rect = self.image.get_rect(center=self.position)
         
         self.shouldShowRadius = True
@@ -149,8 +150,11 @@ class Cannon(pygame.sprite.Sprite):
 
     def hideRadius(self):
         self.image = self.frames[self.current_frame]
+
         self.rect.x = self.anim_x + self.framesOffset[self.current_frame][0]
         self.rect.y = self.anim_y + self.framesOffset[self.current_frame][1]
+
+        self.rect.width
                                                 
         self.shouldShowRadius = False
 
@@ -165,6 +169,7 @@ class Cannon(pygame.sprite.Sprite):
 
         self.anim_x = self.rect.x
         self.anim_y = self.rect.y
+
 
         
 
@@ -362,14 +367,33 @@ class Archer(Cannon):
 
         ]
 
-        # Ustawienie szybszej animacji i krótszego czasu pomiędzy atakami
+        self.framesOffset = [[0,0], 
+                             [0,0], 
+                             [0,0], 
+                             [0,0]]
+
+        self.current_frame = 0
+        self.animation_speed = animation_speed
+        self.animation_counter = 0
+
+        self.towerInRadiusBlitPos =  [self.range - (self.frames[0].get_width()/2), 
+                                      self.range - (self.frames[0].get_height()/2)] 
+
+
+        self.image = self.frames[self.current_frame]
+
+        self.imageCopy = self.image.copy()
+
+        self.rect = self.image.get_rect(center=self.position)
+        self.rectWithoutRadius = self.image.get_rect(center=self.position)
+        self.animationRect = self.rect.copy()
+
+        self.anim_x = self.rect.x
+        self.anim_y = self.rect.y
+
         self.animate_interwal = 100  # Czas pomiędzy klatkami animacji (w ms)
         self.attack_interval = 800  # Czas pomiędzy atakami (w ms) - dla strzelca będzie krótszy
         self.typ_obrażeń="Podstawowy"
-        # Resetowanie animacji na pierwszą klatkę
-        self.current_frame = 0
-        self.image = self.frames[self.current_frame]
-        self.rect = self.image.get_rect(center=position)
         #print(self.rect)
         #self.imageCopy = self.image
 
@@ -385,6 +409,19 @@ class Archer(Cannon):
 
 
                            ]
+
+            self.framesOffset = [[0,0], 
+                                 [0,0], 
+                                 [0,0], 
+                                 [0,0]]
+
+            self.towerInRadiusBlitPos =  [self.range - (self.frames[0].get_width()/2), 
+                                          self.range - (self.frames[0].get_height()/2)] 
+
+
+            self.showRadius()
+
+            self.anim_x -= 4 
 
             print("upgrade2")
             self.level = 2
@@ -404,6 +441,19 @@ class Archer(Cannon):
 
                            ]
 
+            self.framesOffset = [[0,0], 
+                                 [0,0], 
+                                 [0,0], 
+                                 [0,0]]
+
+            self.towerInRadiusBlitPos =  [self.range - (self.frames[0].get_width()/2), 
+                                          self.range - (self.frames[0].get_height()/2)] 
+
+
+
+            self.showRadius()
+
+            self.anim_y -= 10 
             print("upgrade")
             self.level=1
 
@@ -424,14 +474,28 @@ class Temple(Cannon):
             pygame.image.load(os.path.join(self.framesPath, 'Temple5.png')).convert_alpha()
         ]
 
+
+        print('size', self.frames[0].get_size())
+
+
+        self.initialFrameSize = self.frames[0].get_size()
+        self.framesOffset = [[0,0], 
+                             [0,0],
+                             [0,0],
+                             [0,0],
+                             [0,0],
+                             [0,0]]
+
+        self.towerInRadiusBlitPos =  [self.range - (self.frames[0].get_width()/2), 
+                                      self.range - (self.frames[0].get_height()/2)] 
         # Ustawienie szybszej animacji i dłuższego czasu pomiędzy atakami
+
         self.animate_interwal = 150  # Czas pomiędzy klatkami animacji (w ms)
         self.attack_interval = 1200  # Czas pomiędzy atakami (w ms) - dla Temple jest nieco dłuższy
         self.typ_obrażeń="ognisty"
         # Resetowanie animacji na pierwszą klatkę
         self.current_frame = 0
         self.image = self.frames[self.current_frame]
-        self.imageCopy = self.image
 
     def upgrade(self):
         if self.level == 1:
@@ -442,9 +506,25 @@ class Temple(Cannon):
                            pygame.image.load(os.path.join(self.framesPath, 'Temple1.png')).convert_alpha(),
                            pygame.image.load(os.path.join(self.framesPath, 'Temple2.png')).convert_alpha(),
                            pygame.image.load(os.path.join(self.framesPath, 'Temple3.png')).convert_alpha()
-
-
                            ]
+
+            self.framesOffset = [[0,0], 
+                                 [0,0],
+                                 [0,0],
+                                 [0,0]]
+
+            self.towerInRadiusBlitPos =  [self.range - (self.frames[0].get_width()/2), 
+                                          self.range - (self.frames[0].get_height()/2)] 
+
+            self.frameSizeDifference = [
+                self.initialFrameSize[0] - self.frames[0].get_width(), 
+                self.initialFrameSize[1] - self.frames[0].get_height(), 
+                
+            ]
+            self.showRadius()
+
+            self.anim_x -= 11
+            self.anim_y -= 15
 
             print("upgrade2")
             self.level = 2
@@ -457,14 +537,34 @@ class Temple(Cannon):
             self.damage+=100
             self.range+=100
             self.framesPath = os.path.join(self.image_path, 'Temple2')
-            self.frames = [pygame.image.load(os.path.join(self.framesPath, 'Temple0.png')).convert_alpha(),
+
+        
+            self.frames = [pygame.image.load(os.path.join(self.framesPath, 'Temple1.png')).convert_alpha(),
                            pygame.image.load(os.path.join(self.framesPath, 'Temple1.png')).convert_alpha(),
-                           pygame.image.load(os.path.join(self.framesPath, 'Temple2.png')).convert_alpha(),
-                           pygame.image.load(os.path.join(self.framesPath, 'Temple3.png')).convert_alpha()
-
+                           pygame.image.load(os.path.join(self.framesPath, 'Temple1.png')).convert_alpha(),
+                           pygame.image.load(os.path.join(self.framesPath, 'Temple1.png')).convert_alpha()
                            ]
+            self.towerInRadiusBlitPos =  [self.range - (self.frames[0].get_width()/2), 
+                                          self.range - (self.frames[0].get_height()/2)] 
+    
+                
+            self.frameSizeDifference = [
+                self.initialFrameSize[0] - self.frames[0].get_width(), 
+                self.initialFrameSize[1] - self.frames[0].get_height(), 
+                
+            ]
 
-            print("upgrade")
+            self.framesOffset = [[0,0], 
+                                 [0,0],
+                                 [0,0],
+                                 [0,0]]
+
+            self.showRadius()
+
+            self.anim_x += self.frameSizeDifference[0]//2
+            self.anim_y += self.frameSizeDifference[1]//2
+
+
             self.level=1
 
 
@@ -474,6 +574,7 @@ class WithHut(Cannon):
         super().__init__(position, image_path, range, damage, animation_speed,updateSidePanel=None)
         self.name='Witchhouse'
         self.framesPath = os.path.join(image_path, 'Witchhouse')  # Folder z grafikami wieży Temple
+        self.position=position
         self.frames = [
             pygame.image.load(os.path.join(self.framesPath, 'Witchhouse0.png')).convert_alpha(),
             pygame.image.load(os.path.join(self.framesPath, 'Witchhouse1.png')).convert_alpha(),
@@ -483,15 +584,45 @@ class WithHut(Cannon):
             pygame.image.load(os.path.join(self.framesPath, 'Witchhouse5.png')).convert_alpha()
         ]
 
+        self.framesOffset = [[0,0],
+                             [0,0], 
+                             [0,0], 
+                             [0,0], 
+                             [0,0],
+                             [0,0]]
+
+
+        self.towerInRadiusBlitPos =  [self.range - (self.frames[0].get_width()/2) + 1, 
+                                      self.range - (self.frames[0].get_height()/2)] 
+
+
         # Ustawienie szybszej animacji i dłuższego czasu pomiędzy atakami
         self.animate_interwal = 150  # Czas pomiędzy klatkami animacji (w ms)
         self.attack_interval = 1200  # Czas pomiędzy atakami (w ms) - dla Temple jest nieco dłuższy
         self.typ_obrażeń="brak"
         self.slow_down=35
         # Resetowanie animacji na pierwszą klatkę
+
         self.current_frame = 0
         self.image = self.frames[self.current_frame]
+        self.image = pygame.transform.scale(self.image, (100, 80))
         self.imageCopy = self.image
+
+
+        self.animation_speed = animation_speed
+        self.animation_counter = 0
+
+        self.rect = self.image.get_rect(center=self.position)
+        self.rectWithoutRadius = self.image.get_rect(center=self.position)
+        self.animationRect = self.rect.copy()
+
+        self.anim_x = self.rect.x 
+        self.anim_y = self.rect.y
+
+        self.shouldShowRadius = False
+        self.updateBottomPanel = updateSidePanel
+
+        self.radiusColor = 'white'
 
 
     def upgrade(self):
@@ -507,6 +638,22 @@ class WithHut(Cannon):
                 pygame.image.load(os.path.join(self.framesPath, 'Witchhouse4.png')).convert_alpha(),
                 pygame.image.load(os.path.join(self.framesPath, 'Witchhouse5.png')).convert_alpha()
             ]
+
+
+            self.framesOffset = [[0,0], 
+                                 [0,0],
+                                 [0,0],
+                                 [0,0],
+                                 [0,0],
+                                 [0,0]]
+
+            self.towerInRadiusBlitPos =  [self.range - (self.frames[0].get_width()/2), 
+                                          self.range - (self.frames[0].get_height()/2)] 
+
+            self.showRadius()
+
+            self.anim_y -= 25
+
 
             print("upgrade2")
             self.level = 2
@@ -527,6 +674,23 @@ class WithHut(Cannon):
                 pygame.image.load(os.path.join(self.framesPath, 'Witchhouse4.png')).convert_alpha(),
                 pygame.image.load(os.path.join(self.framesPath, 'Witchhouse5.png')).convert_alpha()
             ]
+
+
+            self.framesOffset = [[0,0], 
+                                 [0,0],
+                                 [0,0],
+                                 [0,0], 
+                                 [0,0], 
+                                 [0,0]]
+
+            self.towerInRadiusBlitPos =  [self.range - (self.frames[0].get_width()/2) - 1, 
+                                          self.range - (self.frames[0].get_height()/2)] 
+
+            self.showRadius()
+
+            self.anim_x -= 2 
+            self.anim_y -=7
+
 
             print("upgrade")
             self.level=1
@@ -572,12 +736,40 @@ class Factory(Cannon):
         super().__init__(position, image_path, range, damage, animation_speed, updateSidePanel=None)
         self.name="Factory"
         self.framesPath = os.path.join(image_path, 'Factory')  # Folder z grafikami wieży Temple
+        print(self.framesPath)
+        self.position = position
+        self.range = 100
         self.frames = [
             pygame.image.load(os.path.join(self.framesPath, 'Factory0.png')).convert_alpha(),
-            pygame.image.load(os.path.join(self.framesPath, 'Factory0.png')).convert_alpha(),
-            pygame.image.load(os.path.join(self.framesPath, 'Factory0.png')).convert_alpha()
-
             ]
+
+        self.framesOffset = [[0,0], 
+                             ]
+
+
+
+        self.current_frame = 0
+
+        self.towerInRadiusBlitPos =  [self.range - (self.frames[0].get_width()/2)+1, 
+                                      self.range - (self.frames[0].get_height()/2)] 
+
+
+
+        self.rect = self.image.get_rect(center=self.position)
+        self.rectWithoutRadius = self.image.get_rect(center=self.position)
+        self.animationRect = self.rect.copy()
+
+        self.anim_x = self.rect.x
+        self.anim_y = self.rect.y
+
+
+        self.shouldShowRadius = False
+        self.updateBottomPanel = updateSidePanel
+
+        self.radiusColor = 'white'
+
+
+
 
             # Ustawienie szybszej animacji i dłuższego czasu pomiędzy atakami
         self.animate_interwal = 150  # Czas pomiędzy klatkami animacji (w ms)
@@ -590,7 +782,6 @@ class Factory(Cannon):
         self.target=None
         self.generated_income=False
         self.income=50
-        self.range = 1000
 
 
     def attack(self, monster,money):
@@ -634,11 +825,17 @@ class Factory(Cannon):
             self.framesPath = os.path.join(self.image_path, 'Factory')  # Folder z grafikami wieży Temple
             self.frames = [
                 pygame.image.load(os.path.join(self.framesPath, 'Factory2.png')).convert_alpha(),
-                pygame.image.load(os.path.join(self.framesPath, 'Factory2.png')).convert_alpha(),
-                pygame.image.load(os.path.join(self.framesPath, 'Factory2.png')).convert_alpha()
-
             ]
 
+            self.framesOffset = [[0,0], 
+                             ]
+
+
+            self.towerInRadiusBlitPos =  [self.range - (self.frames[0].get_width()/2)+1, 
+                                          self.range - (self.frames[0].get_height()/2)] 
+
+
+            self.showRadius()
             print("upgrade2")
             self.level = 2
 
@@ -652,6 +849,15 @@ class Factory(Cannon):
                 pygame.image.load(os.path.join(self.framesPath, 'Factory1.png')).convert_alpha()
 
             ]
+            self.framesOffset = [[0,0], 
+                             ]
+
+
+            self.towerInRadiusBlitPos =  [self.range - (self.frames[0].get_width()/2)+1, 
+                                          self.range - (self.frames[0].get_height()/2)] 
+
+
+            self.showRadius()
 
             print("upgrade")
             self.level = 1

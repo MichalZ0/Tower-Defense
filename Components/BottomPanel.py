@@ -94,7 +94,7 @@ class BottomPanel():
                                                self.panelRect.height / 2 - 100 / 2),
                                               "blue", text='', upgradeTitle=self.firstUpgradeName,
                                               image_path=os.path.join(os.getcwd(), 'assets', 'towers', 'MageTower2.0',
-                                                                      'MageTower0.png'), upgradeCost='100')
+                                                                      'MageTower0.png'), upgradeCost='100', upgradedTower=tower)
                 #
             if tower.level2==0:
                 self.upgrade2 = upgradeButton(self.currentSurface, (120, 100),
@@ -119,7 +119,7 @@ class BottomPanel():
                                            self.panelRect.height / 2 - 100 / 2),
                                           "blue", text='', upgradeTitle=self.firstUpgradeName,
                                           image_path=os.path.join(os.getcwd(), 'assets', 'towers', 'Archer2',
-                                                                  'Archer0.png'), upgradeCost='100')
+                                                                  'Archer0.png'), upgradeCost='100', upgradedTower=tower)
 
 
             self.Is = 1
@@ -134,7 +134,7 @@ class BottomPanel():
                                            self.panelRect.height / 2 - 100 / 2),
                                           "blue", text='', upgradeTitle=self.firstUpgradeName,
                                           image_path=os.path.join(os.getcwd(), 'assets', 'towers', 'Temple2',
-                                                                  'Temple0.png'), upgradeCost='100')
+                                                                  'Temple0.png'), upgradeCost='100', upgradedTower=tower)
 
 
             self.Is = 1
@@ -147,8 +147,8 @@ class BottomPanel():
                                           (self.attackSpeed.getPosition()[0] + self.attackSpeed.getSize()[0] + 40,
                                            self.panelRect.height / 2 - 100 / 2),
                                           "blue", text='', upgradeTitle=self.firstUpgradeName,
-                                          image_path=os.path.join(os.getcwd(), 'assets', 'towers', 'Witchhouse3',
-                                                                  'Witchhouse0.png'), upgradeCost='100')
+                                          image_path=os.path.join(os.getcwd(), 'assets', 'towers', 'Witchhouse',
+                                                                  'Witchhouse0.png'), upgradeCost='100', upgradedTower=tower)
             self.Is = 1
             self.Tower = tower
             self.upgrade1.draw()
@@ -160,7 +160,7 @@ class BottomPanel():
                                                self.panelRect.height / 2 - 100 / 2),
                                               "blue", text='', upgradeTitle=self.firstUpgradeName,
                                               image_path=os.path.join(os.getcwd(), 'assets', 'towers', 'Factory',
-                                                                      'Factory1.png'), upgradeCost='100')
+                                                                      'Factory1.png'), upgradeCost='100', upgradedTower=tower)
 
 
             self.Is = 1

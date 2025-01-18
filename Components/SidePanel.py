@@ -155,7 +155,7 @@ class SidePanel:
                             i * self.itemSize[1] + ((i + 1) * self.itemGap),
                         ),
                         "green",
-                        "Factory",  # Domyślna wieża
+                        text="Factory",  # Domyślna wieża
                         image_path=os.path.join(
                             self.itemPath, "Factory", "Factory0.png"
                         ),
@@ -245,9 +245,12 @@ class SidePanel:
     def handleTowerSelection(self, event, sprites, checkCollisionFunction, updateBottomPanel):
         towerMap = {
             "Cannon": Cannon,
-            "Temple": Cannon,
-            "Archer": Cannon,
+            "Temple": Temple,
+            "Archer": Archer,
             "Wizard": Cannon,
+            'WithHut': WithHut,
+            'Factory': Factory,
+            'MageTower': MageTower
         }
 
         if event.type == pygame.MOUSEBUTTONDOWN:
@@ -293,7 +296,12 @@ class SidePanel:
                     self.drawTowerPosition[1] = event.pos[1]
                 
                 self.newTower.setPosition(self.drawTowerPosition)
+                print('pozycja towerka', self.newTower.position)
                 self.newTower.showRadius()
+                print('pozycja towerka po pokazaniu sowy', self.newTower.position)
+
+
+
 
                 if checkCollisionFunction(event.pos):
                    self.newTower.radiusColor = 'white' 
