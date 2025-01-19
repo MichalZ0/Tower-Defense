@@ -215,7 +215,9 @@ class Game:
                         event.button == 1
                     ):  # Lewy przycisk myszy (kliknięcie na przyciski ulepszeń)
                         mouse_pos = pygame.mouse.get_pos()
-                        self.soldTowerReturn = self.bottom_panel.handle_event(event, mouse_pos, self.towers, self.tower_group)
+                        self.bottom_panel.handle_event(event, mouse_pos)
+
+                        self.soldTowerReturn = self.bottom_panel.handle_sell(event, self.towers, self.tower_group)
                         if self.soldTowerReturn:
                             self.money += round(self.soldTowerReturn)
                             self.side_panel.money = round(self.money)

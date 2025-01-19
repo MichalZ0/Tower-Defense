@@ -22,6 +22,7 @@ class BottomPanel():
         self.Is=0
         self.Is2=0
         self.clearPanelSurface = pygame.Surface((self.panelRect.width, self.panelRect.height))
+        self.drawn = False
 
         i = 1
         currentBgBlitPos = [ self.panelRect.width - (i * (self. screenSize[0] - width)), 0 ]
@@ -170,12 +171,16 @@ class BottomPanel():
             self.upgrade1.draw()
 
 
+        self.drawn = True
+
+
     
     def sellFunction(self, tower): 
         return tower
 
     def clearPanel(self): 
         self.Tower=None
+        self.drawn = False
         self.currentSurface.blit(self.clearPanelSurface, (0,0))
 
     # def handle_event(self,event,mouse_pos):
@@ -199,7 +204,7 @@ class BottomPanel():
 
 
 
-    def handle_event(self,event, mouse_pos, towers, sprites):
+    def handle_event(self,event, mouse_pos):
         """Obsługuje kliknięcia na przyciskach w panelu, w tym ulepszanie wieży."""
         if (event.type == pygame.MOUSEBUTTONDOWN and event.pos[1] > self.panelRect.y): 
             if self.Is:
@@ -213,16 +218,23 @@ class BottomPanel():
 
                 self.upgrade2.clicked(event, self.upgrade2ClickRect)
 
+
+
+    def handle_sell(self, event, towers, sprites):
+        if (self.drawn == True): 
+            print('true')
             sellClickPos = self.sell.getRect().copy()
             sellClickPos.y += self.panelRect.y
-            
+
             towerToSell = self.sell.clicked(event, sellClickPos)
             if towerToSell:
                 sprites.remove(towerToSell)
                 towers.remove(towerToSell)
 
+                self.clearPanel()
                 #Zwracamy 90% poczatkowej kwoty
                 return towerToSell.cost * 0.9
+
 
                 
 

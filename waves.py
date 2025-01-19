@@ -146,33 +146,33 @@ class Waves:
                         Goblin(((self.map_base_spawn_point[0]+self.map_start_coefficient_x, self.map_base_spawn_point[1]+self.map_start_coefficient_y)), self.waypoints, (44 * self.sf, 44 * self.sf),
                                self.sf, speed=1))
                     
-                    self.monsters.add(
-                    Thief(((self.map_base_spawn_point[0] + self.map_start_coefficient_x,
-                             self.map_base_spawn_point[1] + self.map_start_coefficient_y)), self.waypoints,
-                           (50 * self.sf, 50 * self.sf),
-                           self.sf, speed=1))
-                    self.monsters.add(Troll(((self.map_base_spawn_point[0] + self.map_start_coefficient_x * 120,
-                                           self.map_base_spawn_point[1] + self.map_start_coefficient_y * 120)),
-                                         self.waypoints, (58 * self.sf, 58 * self.sf), self.sf, speed=0.8))
-                    self.monsters.add(Ghost(((self.map_base_spawn_point[0] + self.map_start_coefficient_x,
-                                             self.map_base_spawn_point[1] + self.map_start_coefficient_y)),
-                                           self.waypoints, (44 * self.sf, 44 * self.sf), self.sf, speed=1.5))
-                    self.monsters.add(Hydra(((self.map_base_spawn_point[0] + self.map_start_coefficient_x,
-                                          self.map_base_spawn_point[1] + self.map_start_coefficient_y)),
-                                        self.waypoints, (73 * self.sf, 60 * self.sf), self.sf, speed=1))
-                    self.monsters.add(
-                        Skeleton((-1750 / 8 * self.sf, 3100 / 6 * self.sf), self.waypoints,
-                                 (52 * self.sf, 54 * self.sf),
-                                 self.sf, speed=1))
-                    self.monsters.add(
-                        Dragon((-2150 / 8 * self.sf, 3100 / 6 * self.sf), self.waypoints, (70 * self.sf, 70 * self.sf),
-                               self.sf, speed=1))
-                    self.monsters.add(
-                        Dragon((-2150 / 8 * self.sf, 3100 / 6 * self.sf), self.waypoints, (70 * self.sf, 70 * self.sf),
-                               self.sf, speed=9))
-                    self.monsters.add(
-                        Dragon((-2150 / 8 * self.sf, 3100 / 6 * self.sf), self.waypoints, (70 * self.sf, 70 * self.sf),
-                               self.sf, speed=9))
+                    # self.monsters.add(
+                    # Thief(((self.map_base_spawn_point[0] + self.map_start_coefficient_x,
+                    #          self.map_base_spawn_point[1] + self.map_start_coefficient_y)), self.waypoints,
+                    #        (50 * self.sf, 50 * self.sf),
+                    #        self.sf, speed=1))
+                    # self.monsters.add(Troll(((self.map_base_spawn_point[0] + self.map_start_coefficient_x * 120,
+                    #                        self.map_base_spawn_point[1] + self.map_start_coefficient_y * 120)),
+                    #                      self.waypoints, (58 * self.sf, 58 * self.sf), self.sf, speed=0.8))
+                    # self.monsters.add(Ghost(((self.map_base_spawn_point[0] + self.map_start_coefficient_x,
+                    #                          self.map_base_spawn_point[1] + self.map_start_coefficient_y)),
+                    #                        self.waypoints, (44 * self.sf, 44 * self.sf), self.sf, speed=1.5))
+                    # self.monsters.add(Hydra(((self.map_base_spawn_point[0] + self.map_start_coefficient_x,
+                    #                       self.map_base_spawn_point[1] + self.map_start_coefficient_y)),
+                    #                     self.waypoints, (73 * self.sf, 60 * self.sf), self.sf, speed=1))
+                    # self.monsters.add(
+                    #     Skeleton((-1750 / 8 * self.sf, 3100 / 6 * self.sf), self.waypoints,
+                    #              (52 * self.sf, 54 * self.sf),
+                    #              self.sf, speed=1))
+                    # self.monsters.add(
+                    #     Dragon((-2150 / 8 * self.sf, 3100 / 6 * self.sf), self.waypoints, (70 * self.sf, 70 * self.sf),
+                    #            self.sf, speed=1))
+                    # self.monsters.add(
+                    #     Dragon((-2150 / 8 * self.sf, 3100 / 6 * self.sf), self.waypoints, (70 * self.sf, 70 * self.sf),
+                    #            self.sf, speed=9))
+                    # self.monsters.add(
+                    #     Dragon((-2150 / 8 * self.sf, 3100 / 6 * self.sf), self.waypoints, (70 * self.sf, 70 * self.sf),
+                    #            self.sf, speed=9))
 
 
             elif self.wave_num == 2:
