@@ -68,6 +68,8 @@ class BottomPanel():
 
 
         self.sell = Button(self.currentSurface, (110, 35), (0,self.panelRect.height - 35), "red", "SPRZEDAJ", textSize=18)
+        self.sell.onClick(self.sellFunction, tower)
+
         self.sell.draw()
 
 
@@ -94,7 +96,7 @@ class BottomPanel():
                                                self.panelRect.height / 2 - 100 / 2),
                                               "blue", text='', upgradeTitle=self.firstUpgradeName,
                                               image_path=os.path.join(os.getcwd(), 'assets', 'towers', 'MageTower2.0',
-                                                                      'MageTower0.png'), upgradeCost='100', upgradedTower=tower)
+                                                                      'MageTower0.png'), upgradeCost='100', upgradedTower=tower, upgradeRoute=0)
                 #
             if tower.level2==0:
                 self.upgrade2 = upgradeButton(self.currentSurface, (120, 100),
@@ -102,7 +104,7 @@ class BottomPanel():
                                                    self.upgrade1.getPosition()[1]),
                                                   "green", text='', upgradeTitle=self.secondUpgradeName,
                                                   image_path=os.path.join(os.getcwd(), 'assets', 'towers','MageTower1.1',
-                                                                          'MageTower0.png'), upgradeCost='300')
+                                                                          'MageTower0.png'), upgradeCost='300', upgradedTower=tower, upgradeRoute=1)
                 self.Is2=1
 
             self.Is = 1
@@ -168,9 +170,9 @@ class BottomPanel():
             self.upgrade1.draw()
 
 
-
-
-
+    
+    def sellFunction(self, tower): 
+        return tower
 
     def clearPanel(self): 
         self.Tower=None
@@ -197,14 +199,33 @@ class BottomPanel():
 
 
 
-    def handle_event(self,event, mouse_pos):
+    def handle_event(self,event, mouse_pos, towers, sprites):
         """Obsługuje kliknięcia na przyciskach w panelu, w tym ulepszanie wieży."""
         if (event.type == pygame.MOUSEBUTTONDOWN and event.pos[1] > self.panelRect.y): 
             if self.Is:
                 self.upgrade1ClickRect = self.upgrade1.getRect().copy()
                 self.upgrade1ClickRect.y += self.screenSize[1] - self.panelRect.height
-
                 self.upgrade1.clicked(event, self.upgrade1ClickRect)
+
+            if self.Is2: 
+                self.upgrade2ClickRect = self.upgrade2.getRect().copy()
+                self.upgrade2ClickRect.y += self.screenSize[1] - self.panelRect.height
+
+                self.upgrade2.clicked(event, self.upgrade2ClickRect)
+
+            sellClickPos = self.sell.getRect().copy()
+            sellClickPos.y += self.panelRect.y
+            
+            towerToSell = self.sell.clicked(event, sellClickPos)
+            if towerToSell:
+                sprites.remove(towerToSell)
+                towers.remove(towerToSell)
+
+                #Zwracamy 90% poczatkowej kwoty
+                return towerToSell.cost * 0.9
+
+                
+
 
 
 

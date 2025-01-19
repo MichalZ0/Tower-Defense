@@ -113,7 +113,7 @@ class Button:
 
 
 class upgradeButton(Button):
-    def __init__(self, screen, size, position, color, text, image_path, upgradeTitle, upgradeCost, upgradedTower=None):
+    def __init__(self, screen, size, position, color, text, image_path, upgradeTitle, upgradeCost, upgradedTower=None, upgradeRoute=0):
         Button.__init__(self, screen, size, position, color, text)
         self.image_path = image_path
 
@@ -130,7 +130,7 @@ class upgradeButton(Button):
         self.upgradeImage = pygame.image.load(image_path)
         self.upgradeImage = pygame.transform.scale(self.upgradeImage, (40, 40))
 
-        self.clickFunction = lambda: self.upgrade(upgradedTower)
+        self.clickFunction = lambda: self.upgrade(upgradedTower, upgradeRoute)
 
     def draw(self):
         self.buttonRect = pygame.draw.rect(self.buttonSurface, self.color, (0,0,self.buttonSurface.get_width(), self.buttonSurface.get_height()), 
@@ -150,9 +150,12 @@ class upgradeButton(Button):
         self.screen.blit(self.buttonSurface, (self.position[0], self.position[1]))
     
        
-    def upgrade(self, tower):
+    def upgrade(self, tower, upgradeRoute):
         print('here he upgrade')
-        tower.upgrade()
+        if (upgradeRoute == 0): 
+            tower.upgrade()
+        else:
+            tower.upgrade2()
         
 
 

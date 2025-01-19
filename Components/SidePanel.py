@@ -242,15 +242,17 @@ class SidePanel:
                 self.button_pressed = False
             return False
 
-    def handleTowerSelection(self, event, sprites, checkCollisionFunction, updateBottomPanel):
+    def handleTowerSelection(
+        self, event, sprites, checkCollisionFunction, updateBottomPanel, clearPanel
+    ):
         towerMap = {
             "Cannon": Cannon,
             "Temple": Temple,
             "Archer": Archer,
             "Wizard": Cannon,
-            'WithHut': WithHut,
-            'Factory': Factory,
-            'MageTower': MageTower
+            "WithHut": WithHut,
+            "Factory": Factory,
+            "MageTower": MageTower,
         }
 
         if event.type == pygame.MOUSEBUTTONDOWN:
@@ -277,6 +279,7 @@ class SidePanel:
                             1,
                             towerButton.getText(),
                         )
+                        clearPanel()
                         updateBottomPanel(self.newTower)
                         break
 
@@ -294,24 +297,19 @@ class SidePanel:
 
                 if event.pos[1] < self.height - self.bottom_panel_height:
                     self.drawTowerPosition[1] = event.pos[1]
-                
+
                 self.newTower.setPosition(self.drawTowerPosition)
-                print('pozycja towerka', self.newTower.position)
+                print("pozycja towerka", self.newTower.position)
                 self.newTower.showRadius()
-                print('pozycja towerka po pokazaniu sowy', self.newTower.position)
-
-
-
+                print("pozycja towerka po pokazaniu sowy", self.newTower.position)
 
                 if checkCollisionFunction(event.pos):
-                   self.newTower.radiusColor = 'white' 
+                    self.newTower.radiusColor = "white"
                 else:
-                    self.newTower.radiusColor = 'red'
-
+                    self.newTower.radiusColor = "red"
 
             elif event.pos[0] > self.towerPanelRect.x:
                 sprites.remove(self.newTower)
-                # usuwa sprite ale chyba nie cala wieze!!
 
         if (
             event.type == pygame.MOUSEBUTTONUP
@@ -319,20 +317,18 @@ class SidePanel:
             and self.newTower != None
         ):
 
-            if self.newTower.radiusColor == 'red': 
+            if (
+                self.newTower.radiusColor == "red"
+                or event.pos[0] > self.width - self.width_size
+            ):
                 sprites.remove(self.newTower)
-                self.newTower = None 
+                self.newTower = None
                 return False
-
 
             self.towerClicked = False
             self.newTower.hideRadius()
             self.newTower.setPosition(self.drawTowerPosition)
             self.drawTowerPosition = [101, 101]
-
-
-
-
 
             return True
 

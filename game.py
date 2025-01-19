@@ -9,10 +9,10 @@ from waves import Waves
 
 
 class Game:
-    def __init__(self, screen, sf, difficulty="easy"):
+    def __init__(self, screen, sf, difficulty="easy", level='Greenfield'):
         pygame.init()
         if difficulty == "easy":
-            self.health = 200
+            self.health = 100
             self.max_waves = 50
             self.money = 1000
         elif difficulty == "challenging":
@@ -46,12 +46,21 @@ class Game:
         self.screen = screen
         self.width, self.height = self.screen.get_width(), self.screen.get_height()
         self.bgPath = os.path.join(os.getcwd(), "assets", "background.png")
-        self.background = pygame.image.load(self.bgPath)
-        self.background = pygame.image.load("assets/map/map_desert.png")
-        self.windmill = pygame.transform.scale(
-            pygame.image.load("assets/map/blacksmith.png"), (250 * sf, 250 * sf)
-        )
-        self.windmill = pygame.transform.flip(self.windmill, True, False)
+
+        if (level == 'Greenfield'):
+            self.background = pygame.image.load("assets/map/background.png")
+            self.windmill = pygame.transform.scale(
+                pygame.image.load("assets/map/blacksmith.png"), (250 * sf, 250 * sf)
+            )
+            self.windmill = pygame.transform.flip(self.windmill, True, False)
+
+        if (level == 'Desert'): 
+            self.background = pygame.image.load("assets/map/map_desert.png")
+
+        if (level == 'Cave'): 
+            self.background = pygame.image.load("assets/map/map_cave.png")
+
+
         self.heart = pygame.transform.scale(
             pygame.image.load("assets/miscelanneous/heart.png"), (350, 350)
         )
@@ -64,7 +73,7 @@ class Game:
         # Inicjalizacja grupy potworów
         self.monsters = pygame.sprite.Group()
         self.current_wave = 1
-        self.waves = Waves(self.sf, self.screen)
+        self.waves = Waves(self.sf, self.screen, difficulty=difficulty, mapName=level)
 
         # DO MAPY 1
         # self.waypoints = [(580/8*self.sf, 3100/6*self.sf), (580/8*self.sf, 2070/6*self.sf), (1580/8*self.sf, 2070/6*self.sf), (1580/8*self.sf, 1270/6*self.sf), (700/8*self.sf, 1270/6*self.sf), (700/8*self.sf, 600/6*self.sf), (2310/8*self.sf, 600/6*self.sf), (2310/8*self.sf, 2440/6*self.sf), (3720/8*self.sf, 2440/6*self.sf), (3720/8*self.sf, 1750/6*self.sf), (3050/8*self.sf, 1750/6*self.sf), (3050/8*self.sf, 400/6*self.sf), (3600/8*self.sf, 400/6*self.sf), (3600/8*self.sf, 1275/6*self.sf), (4500/8*self.sf, 1275/6*self.sf)]
@@ -91,23 +100,24 @@ class Game:
 
     def get_color_at_mouse_click(self, event):
         mouse_x, mouse_y = event
-        print('ev in collision', mouse_x, mouse_y)
+        if (mouse_x > 0 and mouse_x < self.background.get_width() and
+            mouse_y > 0 and mouse_y < self.background.get_height()): 
 
-        # Sprawdzanie koloru piksela w tym miejscu
-        color = self.background.get_at((mouse_x, mouse_y))
-        # print(f"Kolor w miejscu kliknięcia: {color}")
-        R, G, B, A = color  # Przypisanie wartości składowych koloru
-        brightness = 0.2126 * R + 0.7152 * G + 0.0722 * B  # Obliczanie jasności
+            print("ev in collision", mouse_x, mouse_y)
 
+            # Sprawdzanie koloru piksela w tym miejscu
+            color = self.background.get_at((mouse_x, mouse_y))
+            # print(f"Kolor w miejscu kliknięcia: {color}")
+            R, G, B, A = color  # Przypisanie wartości składowych koloru
+            brightness = 0.2126 * R + 0.7152 * G + 0.0722 * B  # Obliczanie jasności
 
-        for t in self.towers:
-            if (t.rectWithoutRadius.collidepoint(event)):
-                return False
+            for t in self.towers:
+                if t.rectWithoutRadius.collidepoint(event):
+                    return False
 
-
-        # Jeśli jasność jest powyżej pewnego progu (np. 128), uznajemy kolor za jasny
-        print(brightness)
-        return brightness > 128
+            # Jeśli jasność jest powyżej pewnego progu (np. 128), uznajemy kolor za jasny
+            print(brightness)
+            return brightness > 128
 
     def take_damage(self, damage):
         self.health -= damage
@@ -143,12 +153,22 @@ class Game:
                     event,
                     self.tower_group,
                     self.get_color_at_mouse_click,
-                    self.bottom_panel.drawSelectedTowerInfo
+                    self.bottom_panel.drawSelectedTowerInfo,
+                    self.bottom_panel.clearPanel
                 ):
 
                     self.towers.insert(0, self.side_panel.getTower())
                     self.Is = 1
                     self.bottom_panel.clearPanel()
+
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if (self.waves.lost): 
+                        if (self.waves.restartButton.clicked(event)):
+                            self.__init__(self.screen, self.sf)  
+                        if (self.waves.menuButton.clicked(event)):
+                            return [True, 0] 
+                
+                
 
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
@@ -177,7 +197,7 @@ class Game:
                         self.tower_group.add(self.tower)
                         self.Is = 1
 
-                        #??????????????????????????????
+                        # ??????????????????????????????
                 # if event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:  # Prawy przycisk myszy
                 #
                 #     for tower in self.towers:
@@ -191,19 +211,35 @@ class Game:
                 #                 self.bottom_panel.drawSelectedTowerInfo(tower)
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    if event.button == 1:  # Lewy przycisk myszy (kliknięcie na przyciski ulepszeń)
+                    if (
+                        event.button == 1
+                    ):  # Lewy przycisk myszy (kliknięcie na przyciski ulepszeń)
                         mouse_pos = pygame.mouse.get_pos()
-                        self.bottom_panel.handle_event(event,mouse_pos)
+                        self.soldTowerReturn = self.bottom_panel.handle_event(event, mouse_pos, self.towers, self.tower_group)
+                        if self.soldTowerReturn:
+                            self.money += round(self.soldTowerReturn)
+                            self.side_panel.money = round(self.money)
+
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    if event.pos[0] < self.width - self.side_panel_width and event.pos[1] < self.height - self.bottom_panel_height: 
+                    if (
+                        event.pos[0] < self.width - self.side_panel_width
+                        and event.pos[1] < self.height - self.bottom_panel_height
+                    ):
                         clicked = False
                         for tower in self.towers:
-                            print('rect with radius', tower.rect)
-                            print('rect without radius', tower.anim_x, tower.anim_y)
-                            if tower.rectWithoutRadius.collidepoint(event.pos):
-                                self.clickPos = ( event.pos[0] - tower.getRect().x, event.pos[1] - tower.getRect().y,)
-                                if ( tower.getMask().get_at(self.clickPos) == 1 and clicked == False):
+                            print(tower.rectWithoutRadius)
+                            if tower.rect.collidepoint(event.pos):
+                                print(tower.rectWithoutRadius)
+                                print("detected click ")
+                                self.clickPos = (
+                                    event.pos[0] - tower.rect.x,
+                                    event.pos[1] - tower.rect.y,
+                                )
+                                if (
+                                    tower.getMask().get_at(self.clickPos) == 1
+                                    and clicked == False
+                                ):
                                     tower.showRadius()
                                     self.bottom_panel.drawSelectedTowerInfo(tower)
                                     clicked = True
@@ -233,7 +269,9 @@ class Game:
                     self.money += i.income
                     self.side_panel.money += i.income
 
+            # print(self.waves.won, self.waves.lost)
             pygame.display.flip()
+
 
     def draw(self):
 
@@ -242,17 +280,6 @@ class Game:
         # Rysowanie linii łączących waypoints
         # self.screen.blit(self.windmill, (-10 * self.sf, -150 * self.sf))
         self.monsters.update()  # Aktualizuje wszystkie potwory w grupie
-
-        if self.Is == 1:
-            for tower in self.towers:
-                tower.update(self.monsters, self.money)
-
-                bullets = tower.getBullets()
-                for i in range(0, len(bullets)):
-                    self.screen.blit(bullets[i].getSprite(), bullets[i].getPosition())
-                    bullets[i].update()
-                    if bullets[i].checkCollision():
-                        bullets.pop(i)
 
         self.waves.update()
 
@@ -263,4 +290,15 @@ class Game:
             self.waves.won,
             self.waves.lost,
         )
+        # self.waves.draw_loss()
         self.bottom_panel.draw()
+        if self.Is == 1:
+            for tower in self.towers:
+                tower.update(self.monsters, self.money)
+
+                bullets = tower.getBullets()
+                for i in range(0, len(bullets)):
+                    self.screen.blit(bullets[i].getSprite(), bullets[i].getPosition())
+                    bullets[i].update()
+                    if bullets[i].checkCollision():
+                        bullets.pop(i)

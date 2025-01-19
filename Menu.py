@@ -129,7 +129,7 @@ class mainMenu:
         self.currentScreen = 2
 
     def startGame(self, diff):
-        self.newGame = game.Game(self.screen, self.sf, difficulty=diff)
+        self.newGame = game.Game(self.screen, self.sf, difficulty=diff, level=self.maps[self.currentMapIdx][0])
         self.currentScreen = 4
 
     def goToSettings(self):
@@ -327,12 +327,19 @@ class mainMenu:
         self.screen.blit(self.settingsScreen, (0, 0))
 
     def goToLeftElement(self):
-        if self.currentMapIdx == len(self.maps) - 1:
-            self.currentMapIdx = 0
-            self.selectLevelDraw()
-            return
+        if self.currentMapIdx == 0: 
+            self.currentMapIdx = len(self.maps)-1
+        else:
+            self.currentMapIdx -= 1
 
-        self.currentMapIdx -= 1
+
+        self.levelTitle.setText(self.maps[self.currentMapIdx][0])
+        self.levelTitle.setPosition(
+            (
+                self.screenRect.width / 2 - self.levelTitle.getSize()[0] / 2,
+                self.currentLevelImageRect.y + self.currentLevelImageRect.height,
+            )
+        )
         self.selectLevelDraw()
 
     def goToRightElement(self):
@@ -366,6 +373,13 @@ class mainMenu:
                 "Desert",
                 pygame.transform.scale(
                     pygame.image.load(os.path.join(self.mapPath, "map_desert.png")),
+                    self.currentLevelSize,
+                ),
+            ],
+            [
+                "Cave",
+                pygame.transform.scale(
+                    pygame.image.load(os.path.join(self.mapPath, "map_cave.png")),
                     self.currentLevelSize,
                 ),
             ],

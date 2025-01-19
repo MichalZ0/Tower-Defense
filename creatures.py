@@ -132,7 +132,7 @@ class Monster(pygame.sprite.Sprite):
 
 class Dragon(Monster):
     def __init__(self, position, waypoints, image_size, sf, animation_speed=10, speed=11):
-        super().__init__(name="Dragon", health=500, max_health=500, speed=speed, damage=50, reward=100, image_size=image_size, animation_speed=animation_speed,
+        super().__init__(name="Dragon", health=500, max_health=500, speed=speed, damage=10, reward=100, image_size=image_size, animation_speed=animation_speed,
                          image_paths=["dragon.png", "dragon1.png", "dragon2.png"], position=position, waypoints=waypoints, sf=sf)
         self.frames = [pygame.transform.flip(frame, True, False) for frame in self.frames]
         self.odporność="ognisty"

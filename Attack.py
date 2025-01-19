@@ -24,9 +24,12 @@ class Attack():
             self.bulletSprite.fill('white')
             self.bulletSprite = pygame.transform.rotate(self.bulletSprite, self.angle)
 
+            
 
 
-
+    def updateDir(self, towerRect): 
+        self.towerRect = towerRect
+        self.__init__(self.targetRect, self.towerRect, 0.5)
 
     def update(self):
         self.pos = [self.pos[0] + self.dir[0] * self.speed,
