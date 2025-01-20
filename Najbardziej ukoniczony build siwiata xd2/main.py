@@ -4,7 +4,7 @@ import Menu
 import Settings
 
 pygame.init()
-pygame.mixer.init()
+
 
 
 Settings.Settings.set('resolution', '800,600')

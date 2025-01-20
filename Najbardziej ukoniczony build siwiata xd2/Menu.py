@@ -14,7 +14,7 @@ class mainMenu:
     def __init__(self, screen, backgroundColor="white", scaleFactor=1):
 
         self.running = True
-        self.volume=0
+
         self.screen = screen
         self.screenRect = self.screen.get_rect()
         self.screenMode = 0
@@ -131,7 +131,6 @@ class mainMenu:
     def startGame(self, diff):
         self.newGame = game.Game(self.screen, self.sf, difficulty=diff, level=self.maps[self.currentMapIdx][0])
         self.currentScreen = 4
-        self.newGame.vol=self.volume
 
     def goToSettings(self):
         self.currentScreen = 1
@@ -304,9 +303,7 @@ class mainMenu:
                 Settings.Settings.set("volume", str(vol))
 
                 if vol != None:
-                    pygame.mixer_music.set_volume(0)
-                    self.volume=vol
-                    print(vol)
+                    pygame.mixer_music.set_volume(vol / 100)
 
             self.settingsDraw()
             pygame.display.update()
@@ -564,8 +561,8 @@ class mainMenu:
             "EASY",
             "RELAKSUJACA   ZABAWA", 
             "100",
-            "1500",
-            "30"
+            "1000",
+            "50"
         )
 
         self.medium = ButtonModule.difficultyButton(
@@ -576,9 +573,9 @@ class mainMenu:
             pygame.image.load(os.path.join(os.getcwd(), "creatures", "dragon.png")), 
             "CHALLENGING",
             "Zmierz   sie   z   losem", 
-            "75",
-            "1300",
-            "40"
+            "70",
+            "750",
+            "60"
         )
 
         self.hard = ButtonModule.difficultyButton(
@@ -590,8 +587,8 @@ class mainMenu:
             "NIGHTMARE",
             "PIEKIELNIE   TRUDNA   ZABAWA", 
             "50",
-            "1200",
-            "50"
+            "500",
+            "75"
         )
 
         self.easy.setPosition((self.screenWidth/2 - (self.easy.getSize()[0]/2), self.header.getPosition()[1] + self.header.getSize()[1] + 10))

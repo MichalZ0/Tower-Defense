@@ -151,11 +151,13 @@ class upgradeButton(Button):
     
        
     def upgrade(self, tower, upgradeRoute):
-        print('here he upgrade')
+        #print('here he upgrade')
         if (upgradeRoute == 0): 
+
             tower.upgrade()
         else:
-            tower.upgrade2()
+            if tower != None:
+                tower.upgrade2()
 
         self.used=1
         

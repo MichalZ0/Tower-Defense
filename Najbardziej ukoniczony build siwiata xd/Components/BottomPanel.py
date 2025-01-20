@@ -46,7 +46,7 @@ class BottomPanel():
 
     def drawSelectedTowerInfo(self, tower):
         self.Is2=0
-        print(tower.name)
+        #print(tower.name)
         self.towerName = Text(self.currentSurface, (0,0), tower.name, size=42)
         self.towerName.draw()
 
@@ -82,7 +82,7 @@ class BottomPanel():
         if tower.name == "Cannon":
             self.upgrade1 = upgradeButton(self.currentSurface, (120, 100), (self.attackSpeed.getPosition()[0] + self.attackSpeed.getSize()[0] + 40,
                                 self.panelRect.height/2 - 100/2),
-                                "blue", text='', upgradeTitle=self.firstUpgradeName, image_path=os.path.join(os.getcwd(), 'assets', 'towers','Mortar', 'Mortar0.png'), upgradeCost='100', upgradedTower=tower)
+                                "blue", text='', upgradeTitle=self.firstUpgradeName, image_path=os.path.join(os.getcwd(), 'assets', 'towers','Mortar', 'Mortar0.png'), upgradeCost=str(tower.upCost), upgradedTower=tower)
         #
             self.upgrade2 = upgradeButton(self.currentSurface, (120, 100), (self.upgrade1.getPosition()[0] + self.upgrade1.getSize()[0] + 30,
                                                                         self.upgrade1.getPosition()[1]),"green", text='', upgradeTitle=self.secondUpgradeName, image_path=os.path.join(os.getcwd(), 'assets', 'upgrades', 'upgrade1.png'), upgradeCost='300')
@@ -102,7 +102,7 @@ class BottomPanel():
                                                self.panelRect.height / 2 - 100 / 2),
                                               "blue", text='', upgradeTitle=self.firstUpgradeName,
                                               image_path=os.path.join(os.getcwd(), 'assets', 'towers', 'MageTower2.0',
-                                                                      'MageTower0.png'), upgradeCost='100', upgradedTower=tower, upgradeRoute=0)
+                                                                      'MageTower0.png'), upgradeCost=str(tower.upCost), upgradedTower= tower, upgradeRoute=0)
                 #
             if tower.level2==0:
                 self.upgrade2 = upgradeButton(self.currentSurface, (120, 100),
@@ -110,7 +110,7 @@ class BottomPanel():
                                                    self.upgrade1.getPosition()[1]),
                                                   "green", text='', upgradeTitle=self.secondUpgradeName,
                                                   image_path=os.path.join(os.getcwd(), 'assets', 'towers','MageTower1.1',
-                                                                          'MageTower0.png'), upgradeCost='300', upgradedTower=tower, upgradeRoute=1)
+                                                                          'MageTower0.png'), upgradeCost=str(tower.upCost2), upgradedTower=tower, upgradeRoute=1)
                 self.Is2=1
 
             self.Is = 1
@@ -124,13 +124,13 @@ class BottomPanel():
 
 
         if tower.name == "Archer":
-            print("przycisk")
+            #print("przycisk")
             self.upgrade1 = upgradeButton(self.currentSurface, (120, 100),
                                           (self.attackSpeed.getPosition()[0] + self.attackSpeed.getSize()[0] + 40,
                                            self.panelRect.height / 2 - 100 / 2),
                                           "blue", text='', upgradeTitle=self.firstUpgradeName,
                                           image_path=os.path.join(os.getcwd(), 'assets', 'towers', 'Archer2',
-                                                                  'Archer0.png'), upgradeCost='100', upgradedTower=tower)
+                                                                  'Archer0.png'), upgradeCost=str(tower.upCost), upgradedTower=tower)
 
 
             self.Is = 1
@@ -148,7 +148,7 @@ class BottomPanel():
                                            self.panelRect.height / 2 - 100 / 2),
                                           "blue", text='', upgradeTitle=self.firstUpgradeName,
                                           image_path=os.path.join(os.getcwd(), 'assets', 'towers', 'Temple2',
-                                                                  'Temple0.png'), upgradeCost='100', upgradedTower=tower)
+                                                                  'Temple0.png'), upgradeCost=str(tower.upCost), upgradedTower=tower)
 
 
             self.Is = 1
@@ -165,7 +165,7 @@ class BottomPanel():
                                            self.panelRect.height / 2 - 100 / 2),
                                           "blue", text='', upgradeTitle=self.firstUpgradeName,
                                           image_path=os.path.join(os.getcwd(), 'assets', 'towers', 'Witchhouse',
-                                                                  'Witchhouse0.png'), upgradeCost='100', upgradedTower=tower)
+                                                                  'Witchhouse0.png'), upgradeCost=str(tower.upCost), upgradedTower=tower)
             self.Is = 1
             self.Tower = tower
             if self.Tower.max==0:
@@ -179,7 +179,7 @@ class BottomPanel():
                                                self.panelRect.height / 2 - 100 / 2),
                                               "blue", text='', upgradeTitle=self.firstUpgradeName,
                                               image_path=os.path.join(os.getcwd(), 'assets', 'towers', 'Factory',
-                                                                      'Factory1.png'), upgradeCost='100', upgradedTower=tower)
+                                                                      'Factory1.png'), upgradeCost=str(tower.upCost), upgradedTower=tower)
 
 
             self.Is = 1
@@ -230,23 +230,27 @@ class BottomPanel():
             if self.Is:
                 self.upgrade1ClickRect = self.upgrade1.getRect().copy()
                 self.upgrade1ClickRect.y += self.screenSize[1] - self.panelRect.height
-                self.upgrade1.clicked(event, self.upgrade1ClickRect)
+                if self.upgrade1.used == 0:
+                    self.upgrade1.clicked(event, self.upgrade1ClickRect)
                 #self.clearPanel()
             if self.Is2: 
                 self.upgrade2ClickRect = self.upgrade2.getRect().copy()
                 self.upgrade2ClickRect.y += self.screenSize[1] - self.panelRect.height
+                if self.upgrade2.used == 0:
+                    self.upgrade2.clicked(event, self.upgrade2ClickRect)
 
-                self.upgrade2.clicked(event, self.upgrade2ClickRect)
+            if self.Is:
+                if self.upgrade1.used == 1:
+                    self.clearPanel()
 
-            if self.upgrade1.used == 1:
-                self.clearPanel()
 
 
 
 
             if self.Is2:
-                if self.upgrade2.used ==1:
+                if self.upgrade2.used == 1:
                     self.clearPanel()
+
 
 
 
@@ -255,7 +259,7 @@ class BottomPanel():
 
     def handle_sell(self, event, towers, sprites):
         if (self.drawn == True): 
-            print('truerfdehdhrt')
+
             sellClickPos = self.sell.getRect().copy()
             sellClickPos.y += self.panelRect.y
 

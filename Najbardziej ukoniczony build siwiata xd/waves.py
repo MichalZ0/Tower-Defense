@@ -39,7 +39,7 @@ class Waves:
                           (3600/8*self.sf, 400/6*self.sf), (3600/8*self.sf, 1275/6*self.sf),
                           (4500/8*self.sf, 1275/6*self.sf)], 
         #DO MAPY 2
-                'Cave': [(1980 / 8 * self.sf, 2680 / 6 * self.sf), (2180 / 8 * self.sf, 2580 / 6 * self.sf),
+                'Desert': [(1980 / 8 * self.sf, 2680 / 6 * self.sf), (2180 / 8 * self.sf, 2580 / 6 * self.sf),
                           (2480 / 8 * self.sf, 2680 / 6 * self.sf), (3080 / 8 * self.sf, 3180 / 6 * self.sf),
                           (3380 / 8 * self.sf, 3220 / 6 * self.sf), (3730 / 8 * self.sf, 3220 / 6 * self.sf),
                           (4030 / 8 * self.sf, 3120 / 6 * self.sf), (4310 / 8 * self.sf, 2890 / 6 * self.sf),
@@ -67,7 +67,7 @@ class Waves:
                           (350 / 8 * self.sf, 1695 / 6 * self.sf)
                           ], 
         # DO MAPY 3
-            'Desert': [(920 / 8 * self.sf, 420 / 6 * self.sf), (1235 / 8 * self.sf, 660 / 6 * self.sf),
+            'Cave': [(920 / 8 * self.sf, 420 / 6 * self.sf), (1235 / 8 * self.sf, 660 / 6 * self.sf),
                         (605 / 8 * self.sf, 1080 / 6 * self.sf), (605 / 8 * self.sf, 1280 / 6 * self.sf),
                         (1050 / 8 * self.sf, 1630 / 6 * self.sf), (700 / 8 * self.sf, 2190 / 6 * self.sf),
                         (900 / 8 * self.sf, 2490 / 6 * self.sf), (1100 / 8 * self.sf, 2590 / 6 * self.sf),
@@ -1149,7 +1149,7 @@ class Waves:
                                     "blue",
                                     "ZAGRAJ PONOWNIE",
                                     textSize=32)
-        self.restartButton.draw()
+
 
         self.menuButton = Button(self.screen, 
                                     (240, 70),
@@ -1158,6 +1158,7 @@ class Waves:
                                     "blue",
                                     "POWROT DO MENU",
                                     textSize=32)
+        self.restartButton.draw()
         self.menuButton.draw()
 
         self.restartButton.onClick(self.restartGame)

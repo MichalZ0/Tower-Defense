@@ -13,17 +13,20 @@ class Game:
         pygame.init()
         if difficulty == "easy":
             self.health = 100
-            self.max_waves = 1
-            self.money = 1000
+            self.max_waves = 30
+            self.money = 1500
         elif difficulty == "challenging":
-            self.health = 1
+            self.health = 75
             self.max_waves = 40
-            self.money = 800
+            self.money = 1200
         elif difficulty == "nightmare":
-            pass
+            self.health = 50
+            self.max_waves=45
+            self.money=1000
         self.side_panel_width = 150
         self.bottom_panel_height = 130
-
+        self.difficulty=difficulty
+        self.level=level
         self.side_panel = SidePanel(
             screen,
             screen.get_width(),
@@ -44,7 +47,7 @@ class Game:
             screen.get_width() - self.side_panel_width,
             self.bottom_panel_height,
         )
-
+        self.vol=0
         self.screen = screen
         self.width, self.height = self.screen.get_width(), self.screen.get_height()
         self.bgPath = os.path.join(os.getcwd(), "assets", "background.png")
@@ -67,7 +70,7 @@ class Game:
             pygame.image.load("assets/miscelanneous/heart.png"), (350, 350)
         )
         self.sf = sf  # Wspolczynnik wielkosci ekranu wzgledem bazowej rozdzielczosci (800x600)
-        print("Sf", self.sf)
+        #print("Sf", self.sf)
         self.background = pygame.transform.scale(
             self.background,
             (800 * self.sf - self.side_panel.width_size * sf, 600 * self.sf),
@@ -106,7 +109,7 @@ class Game:
         if (mouse_x > 0 and mouse_x < self.background.get_width() and
             mouse_y > 0 and mouse_y < self.background.get_height()): 
 
-            print("ev in collision", mouse_x, mouse_y)
+            #print("ev in collision", mouse_x, mouse_y)
 
             # Sprawdzanie koloru piksela w tym miejscu
             color = self.background.get_at((mouse_x, mouse_y))
@@ -119,7 +122,7 @@ class Game:
                     return False
 
             # Jeśli jasność jest powyżej pewnego progu (np. 128), uznajemy kolor za jasny
-            print(brightness)
+            #print(brightness)
             return brightness > 128
 
     def take_damage(self, damage):
@@ -149,7 +152,7 @@ class Game:
                         and not self.waves.won
                         and not self.waves.lost
                     ):
-                        print("Fala rozpoczęta")
+                        #print("Fala rozpoczęta")
                         self.start_wave()
 
                 if self.side_panel.handleTowerSelection(
@@ -175,10 +178,15 @@ class Game:
                     self.bottom_panel.clearPanel()
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    if (self.waves.lost): 
+                    if (self.waves.won == True or self.waves.lost==True):
+                        self.bottom_panel.clearPanel()
+                        for monster in self.monsters:
+                            monster.kill()
+                        for tower in self.towers:
+                            tower.kill()
                         if (self.waves.restartButton.clicked(event)):
-                            self.__init__(self.screen, self.sf)  
-                        if (self.waves.menuButton.clicked(event)):
+                            self.__init__(self.screen, self.sf,self.difficulty, self.level)
+                        elif (self.waves.menuButton.clicked(event)):
                             return [True, 0] 
                 
                 
@@ -191,7 +199,7 @@ class Game:
                     event.type == pygame.KEYDOWN and event.key == pygame.K_1
                 ):  # Lewy przycisk myszy
                     mouse_position = pygame.mouse.get_pos()  # Pobierz współrzędne myszy
-                    print(mouse_position)
+                    #print(mouse_position)
                     self.tower = Cannon(
                         position=mouse_position,
                         image_path=self.tower_image_path,
@@ -247,10 +255,10 @@ class Game:
                     ):
                         clicked = False
                         for tower in self.towers:
-                            print(tower.rectWithoutRadius)
+                            #print(tower.rectWithoutRadius)
                             if tower.rect.collidepoint(event.pos):
-                                print(tower.rectWithoutRadius)
-                                print("detected click ")
+                                #print(tower.rectWithoutRadius)
+                                #print("detected click ")
                                 self.clickPos = (
                                     event.pos[0] - tower.rect.x,
                                     event.pos[1] - tower.rect.y,
@@ -323,7 +331,7 @@ class Game:
             self.bottom_panel.draw()
         if self.Is == 1:
             for tower in self.towers:
-                tower.update(self.monsters, self.money)
+                tower.update(self.monsters, self.money,self.vol)
 
                 bullets = tower.getBullets()
                 for i in range(0, len(bullets)):

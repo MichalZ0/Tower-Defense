@@ -99,9 +99,6 @@ class Cannon(pygame.sprite.Sprite):
         self.upPrice2=300
         self.upgraded=0
         self.game=0
-        self.damage=150
-        self.sound = pygame.mixer.Sound("C:\\Users\\ignac\\OneDrive\\Pulpit\\Tower-Defense-main2\\assets\\sounds\\soundstd\\shooting\\cannon.mp3")
-        self.upCost=self.upPrice1
 
 
 
@@ -116,15 +113,13 @@ class Cannon(pygame.sprite.Sprite):
         )
         return distance <= self.range
 
-    def attack(self, monster, money,vol):
+    def attack(self, monster, money):
         monster.take_damage(self.damage, self.typ_obrażeń)
         self.last_attack_time = pygame.time.get_ticks()
-        self.sound.set_volume(vol/100)
-        self.sound.play()
 
-    def update(self, monsters, money,vol):
+    def update(self, monsters, money):
         #money=self.money
-        #print("kasssssssssssa",self.game.money)
+        print("kasssssssssssa",self.game.money)
         self.target = None
         current_time = pygame.time.get_ticks()
 
@@ -146,9 +141,9 @@ class Cannon(pygame.sprite.Sprite):
 
             self.bullets.append(Attack(self.target.rect, self.rect, 28))
             self.attack(
-                self.target, money,vol
+                self.target, money
             )  # Wywołuje atak, ustawia czas ostatniego ataku
-            #print(self.target.name)
+            print(self.target.name)
 
     def getRect(self):
         return self.rect
@@ -237,26 +232,25 @@ class Cannon(pygame.sprite.Sprite):
                 self.game.money -= self.upPrice2
                 self.damage += 100
                 self.range += 100
-                self.framesPath = os.path.join(self.image_path, "Mortar2")
                 self.frames = [
                     pygame.image.load(
-                        os.path.join(self.framesPath, "Mortar0.png")
+                        os.path.join(self.framesPath, "Cannon0.png")
                     ).convert_alpha(),
                     pygame.image.load(
-                        os.path.join(self.framesPath, "Mortar1.png")
+                        os.path.join(self.framesPath, "Cannon1.png")
                     ).convert_alpha(),
                     pygame.image.load(
-                        os.path.join(self.framesPath, "Mortar2.png")
+                        os.path.join(self.framesPath, "Cannon2.png")
                     ).convert_alpha(),
                     pygame.image.load(
-                        os.path.join(self.framesPath, "Mortar3.png")
+                        os.path.join(self.framesPath, "Cannon3.png")
                     ).convert_alpha(),
                     pygame.image.load(
-                        os.path.join(self.framesPath, "Mortar3.png")
+                        os.path.join(self.framesPath, "Cannon4.png")
                     ).convert_alpha(),
                 ]
 
-                #print("upgrade2")
+                print("upgrade2")
                 self.level = 2
                 self.max=1
 
@@ -269,36 +263,35 @@ class Cannon(pygame.sprite.Sprite):
 
         if self.level == 0:
             if self.game.money >= self.upPrice1:
-                self.upCost=self.upPrice2
+
                 self.game.money-=self.upPrice1
                 self.damage += 100
                 self.range += 100
-                self.framesPath = os.path.join(self.image_path, "Mortar")
                 self.frames = [
                     pygame.image.load(
-                        os.path.join(self.framesPath, "Mortar0.png")
+                        os.path.join(self.framesPath, "Cannon0.png")
                     ).convert_alpha(),
                     pygame.image.load(
-                        os.path.join(self.framesPath, "Mortar1.png")
+                        os.path.join(self.framesPath, "Cannon1.png")
                     ).convert_alpha(),
                     pygame.image.load(
-                        os.path.join(self.framesPath, "Mortar2.png")
+                        os.path.join(self.framesPath, "Cannon2.png")
                     ).convert_alpha(),
                     pygame.image.load(
-                        os.path.join(self.framesPath, "Mortar3.png")
+                        os.path.join(self.framesPath, "Cannon3.png")
                     ).convert_alpha(),
                     pygame.image.load(
-                        os.path.join(self.framesPath, "Mortar4.png")
+                        os.path.join(self.framesPath, "Cannon4.png")
                     ).convert_alpha(),
                 ]
 
-                #print("upgrade")
+                print("upgrade")
                 self.towerInRadiusBlitPos = [
                     self.range - (self.frames[0].get_width() / 2),
                     self.range - (self.frames[0].get_height() / 2),
                 ]
                 self.level = 1
-                #print(self.current_frame, self.animation_speed, self.animation_counter)
+                print(self.current_frame, self.animation_speed, self.animation_counter)
 
                 self.showRadius()
 
@@ -376,11 +369,6 @@ class MageTower(Cannon):
         self.game=0
         self.upPrice1=300
         self.upPrice2=400
-        self.damage=150
-        self.sound = pygame.mixer.Sound("C:\\Users\\ignac\\OneDrive\\Pulpit\\Tower-Defense-main2\\assets\\sounds\\soundstd\\shooting\\magic-dark.ogg")
-        self.upCost = self.upPrice1
-        self.upCost2 = 100
-
 
     def upgrade2(self):
         self.level2 = 1
@@ -464,14 +452,13 @@ class MageTower(Cannon):
                     #self.anim_x -= 70
                     #self.anim_y -= 55
 
-                    #print("upgrade2")
+                    print("upgrade2")
                     self.level = 2
                     self.max=1
 
             if self.level == 0:
                 if self.game.money >= self.upPrice1:
                     self.game.money -= self.upPrice1
-                    self.upCost=self.upPrice2
                     self.damage += 100
                     self.range += 20
                     self.framesPath = os.path.join(self.image_path, "MageTower2.0")
@@ -551,7 +538,7 @@ class MageTower(Cannon):
                     self.anim_x -= 13
                     self.anim_y -= 6
 
-                    #print("upgrade")
+                    print("upgrade")
                     self.level = 1
 
         if self.level2 == 1:
@@ -560,7 +547,7 @@ class MageTower(Cannon):
                     self.game.money -= (self.upPrice2 + 100)
 
                     self.damage += 175
-                    self.range = 350
+                    self.range += 200
                     self.framesPath = os.path.join(self.image_path, "MageTower3.1")
                     self.frames = [
                         pygame.image.load(
@@ -633,16 +620,15 @@ class MageTower(Cannon):
                     #self.anim_x -= 14
                     #self.anim_y -= 11
 
-                    #print("upgrade3.1")
+                    print("upgrade3.1")
                     self.level = 3
                     self.max=1
 
             if self.level == 1:
                 if self.game.money >= (self.upPrice1 + 100):
                     self.game.money -= (self.upPrice1 + 100)
-                    self.upCost=(self.upPrice2+100)
                     self.damage += 150
-                    self.range = 330
+                    self.range += 20
                     self.framesPath = os.path.join(self.image_path, "MageTower2.1")
                     self.frames = [
                         pygame.image.load(
@@ -720,18 +706,17 @@ class MageTower(Cannon):
                     self.anim_x -= 1
                     self.anim_y -= 12
 
-                    #print("upgrade2.1")
+                    print("upgrade2.1")
                     self.level = 2
 
             if self.level == 0:
                 if self.game.money >= 100:
                     self.game.money -= 100
-                    self.upCost=(self.upPrice1 + 100)
 
                     self.damage += 100
-                    self.range += 250
+                    self.range += 200
                     self.framesPath = os.path.join(self.image_path, "MageTower1.1")
-                    #print("proper upgrade")
+                    print("proper upgrade")
                     self.frames = [
                         pygame.image.load(
                             os.path.join(self.framesPath, "MageTower0.png")
@@ -807,7 +792,7 @@ class MageTower(Cannon):
 
                     self.anim_x -= 1
                     self.anim_y -= 12
-                    #print("upgrade1.1")
+                    print("upgrade1.1")
                     self.level = 1
 
 
@@ -874,9 +859,7 @@ class Archer(Cannon):
         self.game=0
         self.upPrice2=350
         self.upPrice1=250
-        self.damage=150
-        self.sound = pygame.mixer.Sound("C:\\Users\\ignac\\OneDrive\\Pulpit\\Tower-Defense-main2\\assets\\sounds\\soundstd\\shooting\\bow.mp3")
-        self.upCost=self.upPrice1
+
     def upgrade(self):
         if self.level == 1:
             if self.game.money >= self.upPrice2:
@@ -910,14 +893,14 @@ class Archer(Cannon):
 
                 self.anim_x -= 4
 
-                #print("upgrade2")
+                print("upgrade2")
                 self.level = 2
                 self.max=1
 
         if self.level == 0:
             if self.game.money >= self.upPrice1:
                 self.game.money -= self.upPrice1
-                self.upCost=self.upPrice2
+
                 self.damage += 100
                 self.range += 50
                 self.framesPath = os.path.join(self.image_path, "Archer2")
@@ -946,7 +929,7 @@ class Archer(Cannon):
                 self.showRadius()
 
                 self.anim_y -= 10
-                #print("upgrade")
+                print("upgrade")
                 self.level = 1
 
 
@@ -1007,9 +990,7 @@ class Temple(Cannon):
         self.game=0
         self.upPrice1=300
         self.upPrice2=400
-        self.damage=150
-        self.sound = pygame.mixer.Sound("C:\\Users\\ignac\\OneDrive\\Pulpit\\Tower-Defense-main2\\assets\\sounds\\soundstd\\shooting\\fire.mp3")
-        self.upCost=self.upPrice1
+
 
 
 
@@ -1051,14 +1032,13 @@ class Temple(Cannon):
                 self.anim_x -= 11
                 self.anim_y -= 15
 
-                #print("upgrade2")
+                print("upgrade2")
                 self.level = 2
                 self.max=1
 
         if self.level == 0:
             if self.game.money >= self.upPrice1:
                 self.game.money -= self.upPrice1
-                self.upCost=self.upPrice2
                 self.damage += 100
                 self.range += 50
                 self.framesPath = os.path.join(self.image_path, "Temple2")
@@ -1170,7 +1150,6 @@ class WithHut(Cannon):
         self.game=0
         self.upPrice1=400
         self.upPrice2=600
-        self.upCost=self.upPrice1
 
     def upgrade(self):
         if self.level == 1:
@@ -1211,14 +1190,13 @@ class WithHut(Cannon):
 
                 self.anim_y -= 25
 
-                #print("upgrade2")
+                print("upgrade2")
                 self.level = 2
                 self.max=1
 
         if self.level == 0:
             if self.game.money >= self.upPrice1:
                 self.game.money -= self.upPrice1
-                self.upCost=self.upPrice2
                 self.slow_down += 15
                 self.range += 50
                 self.framesPath = os.path.join(self.image_path, "Witchhouse2")
@@ -1255,7 +1233,7 @@ class WithHut(Cannon):
                 self.anim_x -= 2
                 self.anim_y -= 7
 
-                #print("upgrade")
+                print("upgrade")
                 self.level = 1
 
     def update(self, monsters, money):
@@ -1279,7 +1257,7 @@ class WithHut(Cannon):
             for monster in self.target:
                 # self.bullets.append(Attack(monster.rect, self.rect, 30))  # Przykład ataku
                 self.attack(monster, money)  # Wywołanie ataku na każdym z potworów
-                #print(monster.name)
+                print(monster.name)
 
     def attack(self, monster, money):
         self.image = self.frames[2]
@@ -1309,9 +1287,9 @@ class Factory(Cannon):
         self.framesPath = os.path.join(
             image_path, "Factory"
         )  # Folder z grafikami wieży Temple
-        #print(self.framesPath)
+        print(self.framesPath)
         self.position = position
-        #self.range = 400
+        self.range = 100
         self.frames = [
             pygame.image.load(
                 os.path.join(self.framesPath, "Factory0.png")
@@ -1359,8 +1337,6 @@ class Factory(Cannon):
         self.game=0
         self.upPrice1=600
         self.upPrice2=700
-        self.upCost=self.upPrice1
-
 
     def attack(self, monster, money):
         self.generated_income = True
@@ -1392,9 +1368,8 @@ class Factory(Cannon):
         if self.level == 1:
             if self.game.money >= self.upPrice2:
                 self.game.money -= self.upPrice2
-                self.upCost=self.upPrice2
                 self.income += 30
-                self.range += 50
+                self.range += 100
                 self.framesPath = os.path.join(
                     self.image_path, "Factory"
                 )  # Folder z grafikami wieży Temple
@@ -1414,7 +1389,7 @@ class Factory(Cannon):
                 ]
 
                 self.showRadius()
-                #print("upgrade2")
+                print("upgrade2")
                 self.level = 2
                 self.max=1
 
@@ -1422,7 +1397,7 @@ class Factory(Cannon):
             if self.game.money >= self.upPrice1:
                 self.game.money -= self.upPrice1
                 self.income += 35
-                self.range += 50
+                self.range += 100
                 self.framesPath = os.path.join(
                     self.image_path, "Factory"
                 )  # Folder z grafikami wieży Temple
@@ -1443,5 +1418,5 @@ class Factory(Cannon):
 
                 self.showRadius()
 
-                #print("upgrade")
+                print("upgrade")
                 self.level = 1

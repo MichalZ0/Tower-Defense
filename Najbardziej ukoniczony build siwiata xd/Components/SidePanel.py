@@ -55,7 +55,7 @@ class SidePanel:
         self.itemPath = os.path.join(os.getcwd(), "assets", "towers")
         self.itemSize = (40, 40)
 
-        self.towerCount = 10
+        self.towerCount = 6
         self.towerColumnCount = 3
         self.towerButtons = []
         self.itemGap = 5
@@ -302,9 +302,9 @@ class SidePanel:
                     self.drawTowerPosition[1] = event.pos[1]
 
                 self.newTower.setPosition(self.drawTowerPosition)
-                print("pozycja towerka", self.newTower.position)
+                #print("pozycja towerka", self.newTower.position)
                 self.newTower.showRadius()
-                print("pozycja towerka po pokazaniu sowy", self.newTower.position)
+
 
                 if checkCollisionFunction(event.pos):
                     self.newTower.radiusColor = "white"
@@ -340,7 +340,7 @@ class SidePanel:
             if self.newTower.price <= money :
                 self.money2=money
                 self.price=self.newTower.price
-                print("dawaj",self.price)
+                #print("dawaj",self.price)
                 self.money2 -= self.price
                 return self.newTower
 
